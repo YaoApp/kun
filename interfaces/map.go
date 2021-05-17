@@ -12,24 +12,26 @@ type Map interface {
 	Merge(maps ...Map)
 }
 
-// // MapString the map interface (map[string]inteface{})
-// type MapString interface {
-// 	Set(key string, value interface{})
-// 	Get(key string) interface{}
-// 	Del(key string)
-// 	GetOrSet(key string) interface{}
-// 	GetAndDel(key string) interface{}
-// 	Range(func(key string, value interface{}) bool)
-// 	IsEmpty() bool
-// }
+// MapStr the map interface (map[string]inteface{})
+type MapStr interface {
+	Set(key string, value interface{})
+	Get(key string) interface{}
+	Del(key string)
+	GetOrSet(key string, value interface{}) interface{}
+	GetAndDel(key string) interface{}
+	Range(func(key string, value interface{}) bool)
+	IsEmpty() bool
+	Merge(maps ...MapStr)
+}
 
-// // MapStringString the map interface (map[string]string)
-// type MapStringString interface {
-// 	Set(key string, value string)
-// 	Get(key string) string
-// 	Del(key string)
-// 	GetOrSet(key string) string
-// 	GetAndDel(key string) string
-// 	Range(func(key string, value string) bool)
-// 	IsEmpty() bool
-// }
+// MapStrStr the map interface (map[string]string)
+type MapStrStr interface {
+	Set(key string, value string)
+	Get(key string) string
+	Del(key string)
+	GetOrSet(key string, value string) string
+	GetAndDel(key string) string
+	Range(func(key string, value string) bool)
+	IsEmpty() bool
+	Merge(maps ...MapStrStr)
+}
