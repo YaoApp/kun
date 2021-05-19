@@ -5,6 +5,11 @@ import "github.com/yaoapp/kun/interfaces"
 // MapStrAny type of map[string}]inteface{}
 type MapStrAny map[string]interface{}
 
+// MakeMap create a new instance (the default type of map)
+func MakeMap() MapStrAny {
+	return MapStrAny{}
+}
+
 // MakeMapStr create a new instance
 func MakeMapStr() MapStrAny {
 	return MapStrAny{}

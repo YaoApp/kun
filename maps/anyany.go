@@ -5,11 +5,6 @@ import "github.com/yaoapp/kun/interfaces"
 // MapAnyAny type of map[interface{}]inteface{}
 type MapAnyAny map[interface{}]interface{}
 
-// MakeMap create a new instance
-func MakeMap() MapAnyAny {
-	return MapAnyAny{}
-}
-
 // MakeAnyAny create a new instance
 func MakeAnyAny() MapAnyAny {
 	return MapAnyAny{}
