@@ -38,7 +38,7 @@ func (d Day) Format(format string) string {
 	return "2021-05-18 12:30:20"
 }
 
-// Human cast to string of english
+// Human cast to human language
 func (d Day) Human() string {
 	return "1 hour ago"
 }

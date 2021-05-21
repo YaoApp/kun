@@ -11,13 +11,6 @@ type MapAnyAnySync struct {
 	*sync.Map
 }
 
-// MakeMapSync create a new instance
-func MakeMapSync() MapAnyAnySync {
-	return MapAnyAnySync{
-		Map: &sync.Map{},
-	}
-}
-
 // MakeAnyAnySync create a new instance
 func MakeAnyAnySync() MapAnyAnySync {
 	return MapAnyAnySync{

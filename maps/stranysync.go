@@ -11,6 +11,38 @@ type MapStrAnySync struct {
 	*sync.Map
 }
 
+// MapSync alias of MapStrAnySync
+type MapSync = MapStrAnySync
+
+// MapStrSync alias of MapStrAnySync
+type MapStrSync = MapStrAnySync
+
+// MakeSync create a new instance
+func MakeSync() MapStrAnySync {
+	return MakeMapSync()
+}
+
+// SyncOf create a new instance
+func SyncOf(values map[string]interface{}) MapStrAnySync {
+	return MapStrSyncOf(values)
+}
+
+// MakeMapSync create a new instance
+func MakeMapSync() MapStrAnySync {
+	return MapStrAnySync{
+		Map: &sync.Map{},
+	}
+}
+
+// MapStrSyncOf create a new instance
+func MapStrSyncOf(values map[string]interface{}) MapStrAnySync {
+	m := MakeMapSync()
+	for key, value := range values {
+		m.Set(key, value)
+	}
+	return m
+}
+
 // MakeStrSync create a new instance
 func MakeStrSync() MapStrAnySync {
 	return MapStrAnySync{
