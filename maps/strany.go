@@ -1,6 +1,12 @@
 package maps
 
-import "github.com/yaoapp/kun/interfaces"
+import (
+	"fmt"
+	"reflect"
+	"sort"
+
+	"github.com/yaoapp/kun/interfaces"
+)
 
 // MapStrAny type of map[string}]inteface{}
 type MapStrAny map[string]interface{}
@@ -13,37 +19,89 @@ type MapStr = MapStrAny
 
 // Make create a new instance (the default type of map)
 func Make() MapStrAny {
-	return MakeMap()
+	return MakeMapStrAny()
 }
 
 // MakeMap create a new instance (the default type of map)
 func MakeMap() MapStrAny {
-	return MapStrAny{}
+	return MakeMapStrAny()
 }
 
 // Of create a new instance (the default type of map)
 func Of(values map[string]interface{}) MapStrAny {
-	return MapOf(values)
+	return MapStrAnyOf(values)
 }
 
 // MapOf create a new instance (the default type of map)
 func MapOf(values map[string]interface{}) MapStrAny {
-	return MapStrAny(values)
+	return MapStrAnyOf(values)
 }
 
 // MapStrOf create a new instance (the default type of map)
 func MapStrOf(values map[string]interface{}) MapStrAny {
-	return MapStrAny(values)
+	return MapStrAnyOf(values)
+}
+
+// MapStrAnyOf create a new instance (the default type of map)
+func MapStrAnyOf(values map[string]interface{}) MapStrAny {
+	m := MakeMapStrAny()
+	for key, value := range values {
+		m.Set(key, value)
+	}
+	return m
 }
 
 // MakeMapStr create a new instance
 func MakeMapStr() MapStrAny {
+	return MakeMapStrAny()
+}
+
+// MakeMapStrAny create a new instance
+func MakeMapStrAny() MapStrAny {
 	return MapStrAny{}
 }
 
-// MakeStrAny create a new instance
-func MakeStrAny() MapStrAny {
-	return MapStrAny{}
+// Flatten The Flatten method is alias of Dot, to flatten a multi-dimensional map[string]inteface{} into a single level  map[string]inteface{}
+// that uses "dot" notation to indicate depth
+func (m MapStrAny) Flatten() MapStrAny {
+	return m.Dot()
+}
+
+// Dot The Dot method flattens a multi-dimensional map[string]inteface{} into a single level  map[string]inteface{}
+// that uses "dot" notation to indicate depth
+func (m MapStrAny) Dot() MapStrAny {
+	res := MakeMapStrAny()
+	m.Range(func(key string, value interface{}) bool {
+		res.dotSet(key, value)
+		return true
+	})
+	return res
+}
+
+// dotSet set the value for a key uses "dot" notation
+func (m MapStrAny) dotSet(key string, value interface{}) {
+
+	m.Set(key, value)
+
+	reflectValue := reflect.ValueOf(value)
+	reflectValue = reflect.Indirect(reflectValue)
+	valueKind := reflectValue.Kind()
+
+	if valueKind == reflect.Slice || valueKind == reflect.Array { // Slice || Array
+		for i := 0; i < reflectValue.Len(); i++ {
+			m.dotSet(fmt.Sprintf("%s.%d", key, i), reflectValue.Index(i).Interface())
+		}
+
+	} else if valueKind == reflect.Map { // Map
+		for _, sub := range reflectValue.MapKeys() {
+			m.dotSet(fmt.Sprintf("%s.%v", key, sub), reflectValue.MapIndex(sub).Interface())
+		}
+	} else if subMap, ok := value.(MapStrAny); ok { // map[string]interface{}
+		subMap.Range(func(sub string, val interface{}) bool {
+			m.dotSet(sub, val)
+			return true
+		})
+	}
 }
 
 // Set set the value for a key
@@ -72,14 +130,14 @@ func (m MapStrAny) GetOrSet(key, value string) interface{} {
 	if res, has := m[key]; has {
 		return res
 	}
-	m[key] = value
+	m.Set(key, value)
 	return value
 }
 
 // GetAndDel deletes the value for a key, returning the previous value if any. The loaded result reports whether the key was present.
 func (m MapStrAny) GetAndDel(key string) interface{} {
 	if res, has := m[key]; has {
-		delete(m, key)
+		m.Del(key)
 		return res
 	}
 	return nil
@@ -106,16 +164,17 @@ func (m MapStrAny) Keys() []string {
 		keys = append(keys, key)
 		return true
 	})
+	sort.Strings(keys)
 	return keys
 }
 
 // Values returns all values of the map as a slice.
 func (m MapStrAny) Values() []interface{} {
 	values := []interface{}{}
-	m.Range(func(key string, value interface{}) bool {
-		values = append(values, value)
-		return true
-	})
+	keys := m.Keys()
+	for _, key := range keys {
+		values = append(values, m.Get(key))
+	}
 	return values
 }
 
