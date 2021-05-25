@@ -32,6 +32,12 @@ func (m MapAnyAnySync) Get(key interface{}) interface{} {
 	return nil
 }
 
+// Has return true whether value was found in the map.
+func (m MapAnyAnySync) Has(key interface{}) bool {
+	_, has := m.Map.Load(key)
+	return has
+}
+
 // Del deletes the value for a key.
 func (m MapAnyAnySync) Del(key interface{}) {
 	m.Delete(key)
@@ -70,7 +76,7 @@ func (m MapAnyAnySync) IsEmpty() bool {
 }
 
 // Merge merges hash maps
-func (m MapAnyAnySync) Merge(maps ...interfaces.Map) {
+func (m MapAnyAnySync) Merge(maps ...interfaces.MapAnyAny) {
 	for _, new := range maps {
 		new.Range(func(key, value interface{}) bool {
 			m.Set(key, value)

@@ -194,6 +194,8 @@ func TestStrAnySyncGetOrSet(t *testing.T) {
 func TestStrAnySyncIsEmpty(t *testing.T) {
 	_, _, _, _, all := prepareTestingData()
 	m := SyncOf(all)
+	assert.False(t, m.IsEmpty())
+
 	keys := m.Keys()
 	if assert.Equal(t, 22, len(keys), "The length of keys should be 22") {
 		for _, key := range keys {

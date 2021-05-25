@@ -88,14 +88,14 @@ func MapStrAnySyncOf(data map[string]interface{}) MapStrAnySync {
 
 // Flatten The Flatten method is alias of Dot, to flatten a multi-dimensional map[string]inteface{} into a single level  map[string]inteface{}
 // that uses "dot" notation to indicate depth
-func (m MapStrAnySync) Flatten() MapStrAny {
+func (m MapStrAnySync) Flatten() MapStrAnySync {
 	return m.Dot()
 }
 
 // Dot The Dot method flattens a multi-dimensional map[string]inteface{} into a single level  map[string]inteface{}
 // that uses "dot" notation to indicate depth
-func (m MapStrAnySync) Dot() MapStrAny {
-	res := MakeMapStrAny()
+func (m MapStrAnySync) Dot() MapStrAnySync {
+	res := MakeMapStrAnySync()
 	m.Range(func(key string, value interface{}) bool {
 		res.dotSet(key, value)
 		return true
@@ -136,6 +136,12 @@ func (m MapStrAnySync) Get(key string) interface{} {
 		return value
 	}
 	return nil
+}
+
+// Has return true whether value was found in the map.
+func (m MapStrAnySync) Has(key string) bool {
+	_, has := m.Map.Load(key)
+	return has
 }
 
 // Del deletes the value for a key.
@@ -210,7 +216,7 @@ func (m MapStrAnySync) IsEmpty() bool {
 }
 
 // Merge merges hash maps
-func (m MapStrAnySync) Merge(maps ...interfaces.MapStr) {
+func (m MapStrAnySync) Merge(maps ...interfaces.MapStrAny) {
 	for _, new := range maps {
 		new.Range(func(key string, value interface{}) bool {
 			m.Set(key, value)

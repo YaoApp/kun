@@ -202,6 +202,8 @@ func TestStrAnyGetOrSet(t *testing.T) {
 func TestStrAnyIsEmpty(t *testing.T) {
 	_, _, _, _, all := prepareTestingData()
 	m := Of(all)
+	assert.False(t, m.IsEmpty())
+
 	keys := m.Keys()
 	if assert.Equal(t, 22, len(keys), "The length of keys should be 22") {
 		for _, key := range keys {
@@ -231,19 +233,19 @@ func TestStrAnyMerge(t *testing.T) {
 	}
 }
 
-func checkArrayValues(t *testing.T, m interfaces.MapStr) {
+func checkArrayValues(t *testing.T, m interfaces.MapStrAny) {
 	assert.Equal(t, [2]int64{64, 64}, m.Get("arrayint64"))
 }
 
-func checkSliceValues(t *testing.T, m interfaces.MapStr) {
+func checkSliceValues(t *testing.T, m interfaces.MapStrAny) {
 	assert.Equal(t, []int64{64, 64, 64}, m.Get("sliceint64"))
 }
 
-func checkMapValues(t *testing.T, m interfaces.MapStr) {
+func checkMapValues(t *testing.T, m interfaces.MapStrAny) {
 	assert.Equal(t, map[int64]interface{}{64: "hello"}, m.Get("mapint64"))
 }
 
-func checkStructValues(t *testing.T, m interfaces.MapStr) {
+func checkStructValues(t *testing.T, m interfaces.MapStrAny) {
 	assert.Equal(t,
 		struct {
 			Name  string
@@ -251,7 +253,7 @@ func checkStructValues(t *testing.T, m interfaces.MapStr) {
 		}{Name: "unit-test", Value: "hello"}, m.Get("struct"))
 }
 
-func checkNestedValues(t *testing.T, m interfaces.MapStr) {
+func checkNestedValues(t *testing.T, m interfaces.MapStrAny) {
 	assert.Equal(t, map[string]interface{}{
 		"basic": map[string]interface{}{
 			"int64":   int64(64),
@@ -274,7 +276,7 @@ func checkNestedValues(t *testing.T, m interfaces.MapStr) {
 	}, m.Get("nested"))
 }
 
-func checkBaiscValues(t *testing.T, m interfaces.MapStr) {
+func checkBaiscValues(t *testing.T, m interfaces.MapStrAny) {
 	assert.Equal(t, int64(64), m.Get("int64"))
 	assert.Equal(t, int32(32), m.Get("int32"))
 	assert.Equal(t, int16(16), m.Get("int16"))

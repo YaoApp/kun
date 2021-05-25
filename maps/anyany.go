@@ -64,7 +64,7 @@ func (m MapAnyAny) IsEmpty() bool {
 }
 
 // Merge merges hash maps
-func (m MapAnyAny) Merge(maps ...interfaces.Map) {
+func (m MapAnyAny) Merge(maps ...interfaces.MapAnyAny) {
 	for _, new := range maps {
 		new.Range(func(key, value interface{}) bool {
 			m.Set(key, value)
