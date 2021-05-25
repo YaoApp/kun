@@ -19,7 +19,10 @@ type MapStr interface {
 	Del(key string)
 	GetOrSet(key string, value interface{}) interface{}
 	GetAndDel(key string) interface{}
+	Len() int
 	Range(func(key string, value interface{}) bool)
+	Keys() []string
+	Values() []interface{}
 	IsEmpty() bool
 	Merge(maps ...MapStr)
 }

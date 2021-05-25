@@ -1,6 +1,9 @@
 package maps
 
 import (
+	"fmt"
+	"reflect"
+	"sort"
 	"sync"
 
 	"github.com/yaoapp/kun/interfaces"
@@ -83,6 +86,44 @@ func MapStrAnySyncOf(data map[string]interface{}) MapStrAnySync {
 	return m
 }
 
+// Flatten The Flatten method is alias of Dot, to flatten a multi-dimensional map[string]inteface{} into a single level  map[string]inteface{}
+// that uses "dot" notation to indicate depth
+func (m MapStrAnySync) Flatten() MapStrAny {
+	return m.Dot()
+}
+
+// Dot The Dot method flattens a multi-dimensional map[string]inteface{} into a single level  map[string]inteface{}
+// that uses "dot" notation to indicate depth
+func (m MapStrAnySync) Dot() MapStrAny {
+	res := MakeMapStrAny()
+	m.Range(func(key string, value interface{}) bool {
+		res.dotSet(key, value)
+		return true
+	})
+	return res
+}
+
+// dotSet set the value for a key uses "dot" notation
+func (m MapStrAnySync) dotSet(key string, value interface{}) {
+
+	m.Set(key, value)
+
+	reflectValue := reflect.ValueOf(value)
+	reflectValue = reflect.Indirect(reflectValue)
+	valueKind := reflectValue.Kind()
+
+	if valueKind == reflect.Slice || valueKind == reflect.Array { // Slice || Array
+		for i := 0; i < reflectValue.Len(); i++ {
+			m.dotSet(fmt.Sprintf("%s.%d", key, i), reflectValue.Index(i).Interface())
+		}
+
+	} else if valueKind == reflect.Map { // Map
+		for _, sub := range reflectValue.MapKeys() {
+			m.dotSet(fmt.Sprintf("%s.%v", key, sub), reflectValue.MapIndex(sub).Interface())
+		}
+	}
+}
+
 // Set set the value for a key
 func (m MapStrAnySync) Set(key string, value interface{}) {
 	m.Store(key, value)
@@ -119,6 +160,16 @@ func (m MapStrAnySync) GetAndDel(key string) interface{} {
 	return value
 }
 
+// Len returns the length of the map.
+func (m MapStrAnySync) Len() int {
+	length := 0
+	m.Map.Range(func(key, value interface{}) bool {
+		length++
+		return true
+	})
+	return length
+}
+
 // Range calls f sequentially for each key and value present in the map. If f returns false, range stops the iteration.
 func (m MapStrAnySync) Range(cb func(key string, value interface{}) bool) {
 	m.Map.Range(func(key, value interface{}) bool {
@@ -127,14 +178,35 @@ func (m MapStrAnySync) Range(cb func(key string, value interface{}) bool) {
 	})
 }
 
+// Keys returns all keys of the map as a slice.
+func (m MapStrAnySync) Keys() []string {
+	keys := []string{}
+	m.Range(func(key string, value interface{}) bool {
+		keys = append(keys, key)
+		return true
+	})
+	sort.Strings(keys)
+	return keys
+}
+
+// Values returns all values of the map as a slice.
+func (m MapStrAnySync) Values() []interface{} {
+	values := []interface{}{}
+	keys := m.Keys()
+	for _, key := range keys {
+		values = append(values, m.Get(key))
+	}
+	return values
+}
+
 //IsEmpty checks whether the map is empty. It returns true if map is empty, or else false.
 func (m MapStrAnySync) IsEmpty() bool {
-	has := false
+	empty := true
 	m.Range(func(key string, value interface{}) bool {
-		has = true
+		empty = false
 		return false
 	})
-	return has
+	return empty
 }
 
 // Merge merges hash maps
