@@ -9,16 +9,22 @@ import (
 	"github.com/yaoapp/kun/interfaces"
 )
 
-// MapStrAnySync type of sync.Map
-type MapStrAnySync struct {
-	*sync.Map
-}
-
 // MapSync alias of MapStrAnySync
 type MapSync = MapStrAnySync
 
 // MapStrSync alias of MapStrAnySync
 type MapStrSync = MapStrAnySync
+
+// StrSync alias of MapStrAnySync
+type StrSync = MapStrAnySync
+
+// StrAnySync alias of MapStrAnySync
+type StrAnySync = MapStrAnySync
+
+// MapStrAnySync type of sync.Map
+type MapStrAnySync struct {
+	*sync.Map
+}
 
 // MakeSync create a new instance
 func MakeSync() MapStrAnySync {

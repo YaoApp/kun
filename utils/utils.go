@@ -22,12 +22,12 @@ func Dump(values ...interface{}) {
 	f.Indent = 4
 	for _, v := range values {
 		var res interface{}
-		txt, err := jsoniter.Marshal(v)
+		txt, err := json.Marshal(v)
 		if err != nil {
 			fmt.Printf("%#v\n%s\n", v, err)
 			continue
 		}
-		jsoniter.Unmarshal(txt, &res)
+		json.Unmarshal(txt, &res)
 		s, _ := f.Marshal(res)
 		fmt.Printf("%s\n", s)
 	}

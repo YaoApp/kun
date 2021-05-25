@@ -8,14 +8,20 @@ import (
 	"github.com/yaoapp/kun/interfaces"
 )
 
-// MapStrAny type of map[string}]inteface{}
-type MapStrAny map[string]interface{}
-
 // Map alias of MapStrAny
 type Map = MapStrAny
 
+// Str alias of MapStrAny
+type Str = MapStrAny
+
+// StrAny alias of MapStrAny
+type StrAny = MapStrAny
+
 // MapStr alias of MapStrAny
 type MapStr = MapStrAny
+
+// MapStrAny type of map[string}]inteface{}
+type MapStrAny map[string]interface{}
 
 // Make create a new instance (the default type of map)
 func Make() MapStrAny {
