@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/yaoapp/kun/interfaces"
 )
 
 func TestStrAnyMake(t *testing.T) {
@@ -203,6 +204,26 @@ func TestStrAnyIsEmpty(t *testing.T) {
 	assert.True(t, m.IsEmpty())
 }
 
+func TestStrAnyMerge(t *testing.T) {
+	basic, array, slice, _, _ := prepareTestingData()
+	m := Of(basic)
+
+	var new interfaces.MapStr = Of(array)
+	m.Merge(new)
+	if assert.Equal(t, 16, m.Len(), "The length of keys should be 22") {
+		assert.Equal(t, int64(64), m.Dot().Get("int64.0"))
+		assert.Equal(t, int64(64), m.Dot().Get("int64.1"))
+	}
+
+	var new2 interfaces.MapStr = Of(slice)
+	m.Merge(new, new2)
+	if assert.Equal(t, 16, m.Len(), "The length of keys should be 22") {
+		assert.Equal(t, int64(64), m.Dot().Get("int64.0"))
+		assert.Equal(t, int64(64), m.Dot().Get("int64.1"))
+		assert.Equal(t, int64(64), m.Dot().Get("int64.2"))
+	}
+}
+
 func checkArrayValues(t *testing.T, m MapStrAny) {
 	assert.Equal(t, [2]int64{64, 64}, m.Get("arrayint64"))
 }
@@ -266,14 +287,15 @@ func checkBaiscValues(t *testing.T, m MapStrAny) {
 }
 
 // prepareTestingData prepare the data for testing
-func prepareTestingData() (map[string]interface{}, map[string]interface{}, map[string]interface{}, map[string]interface{}, map[string]interface{}) {
+// baiscValues, arrayValues, sliceValues, mapValues, allValues
+func prepareTestingData() (baiscValues, arrayValues, sliceValues, mapValues, allValues map[string]interface{}) {
 
 	var structValue = struct {
 		Name  string
 		Value interface{}
 	}{Name: "unit-test", Value: "hello"}
 
-	var baiscValues = map[string]interface{}{
+	baiscValues = map[string]interface{}{
 		"int64":   int64(64),
 		"int32":   int32(32),
 		"int16":   int16(16),
@@ -292,19 +314,19 @@ func prepareTestingData() (map[string]interface{}, map[string]interface{}, map[s
 		"string":  "string",
 	}
 
-	var arrayValues = map[string]interface{}{
+	arrayValues = map[string]interface{}{
 		"int64": [2]int64{64, 64},
 	}
 
-	var sliceValues = map[string]interface{}{
+	sliceValues = map[string]interface{}{
 		"int64": []int64{64, 64, 64},
 	}
 
-	var mapValues = map[string]interface{}{
+	mapValues = map[string]interface{}{
 		"int64": map[int64]interface{}{64: "hello"},
 	}
 
-	var allValues = map[string]interface{}{}
+	allValues = map[string]interface{}{}
 	for key, value := range baiscValues {
 		allValues[key] = value
 	}

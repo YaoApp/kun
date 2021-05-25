@@ -127,7 +127,7 @@ func (m MapStrAny) Del(key string) {
 }
 
 // GetOrSet returns the existing value for the key if present. Otherwise, it stores and returns the given value.
-func (m MapStrAny) GetOrSet(key, value string) interface{} {
+func (m MapStrAny) GetOrSet(key string, value interface{}) interface{} {
 	if res, has := m[key]; has {
 		return res
 	}
