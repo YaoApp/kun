@@ -22,9 +22,29 @@ func Make() MapStrAny {
 	return MakeMapStrAny()
 }
 
-// MakeMap create a new instance (the default type of map)
+// MakeMap create a new instance
 func MakeMap() MapStrAny {
 	return MakeMapStrAny()
+}
+
+// MakeMapStr create a new instance
+func MakeMapStr() MapStrAny {
+	return MakeMapStrAny()
+}
+
+// MakeStr create a new instance
+func MakeStr() MapStrAny {
+	return MakeMapStrAny()
+}
+
+// MakeStrAny create a new instance
+func MakeStrAny() MapStrAny {
+	return MakeMapStrAny()
+}
+
+// MakeMapStrAny create a new instance
+func MakeMapStrAny() MapStrAny {
+	return MapStrAny{}
 }
 
 // Of create a new instance (the default type of map)
@@ -32,13 +52,23 @@ func Of(values map[string]interface{}) MapStrAny {
 	return MapStrAnyOf(values)
 }
 
-// MapOf create a new instance (the default type of map)
+// MapOf create a new instance
 func MapOf(values map[string]interface{}) MapStrAny {
 	return MapStrAnyOf(values)
 }
 
-// MapStrOf create a new instance (the default type of map)
+// MapStrOf create a new instance
 func MapStrOf(values map[string]interface{}) MapStrAny {
+	return MapStrAnyOf(values)
+}
+
+// StrOf create a new instance
+func StrOf(values map[string]interface{}) MapStrAny {
+	return MapStrAnyOf(values)
+}
+
+// StrAnyOf create a new instance
+func StrAnyOf(values map[string]interface{}) MapStrAny {
 	return MapStrAnyOf(values)
 }
 
@@ -49,16 +79,6 @@ func MapStrAnyOf(values map[string]interface{}) MapStrAny {
 		m.Set(key, value)
 	}
 	return m
-}
-
-// MakeMapStr create a new instance
-func MakeMapStr() MapStrAny {
-	return MakeMapStrAny()
-}
-
-// MakeMapStrAny create a new instance
-func MakeMapStrAny() MapStrAny {
-	return MapStrAny{}
 }
 
 // Flatten The Flatten method is alias of Dot, to flatten a multi-dimensional map[string]inteface{} into a single level  map[string]inteface{}

@@ -19,42 +19,68 @@ type MapStrSync = MapStrAnySync
 
 // MakeSync create a new instance
 func MakeSync() MapStrAnySync {
-	return MakeMapSync()
-}
-
-// SyncOf create a new instance
-func SyncOf(values map[string]interface{}) MapStrAnySync {
-	return MapStrSyncOf(values)
+	return MakeMapStrAnySync()
 }
 
 // MakeMapSync create a new instance
 func MakeMapSync() MapStrAnySync {
-	return MapStrAnySync{
-		Map: &sync.Map{},
-	}
+	return MakeMapStrAnySync()
 }
 
-// MapStrSyncOf create a new instance
-func MapStrSyncOf(values map[string]interface{}) MapStrAnySync {
-	m := MakeMapSync()
-	for key, value := range values {
-		m.Set(key, value)
-	}
-	return m
+// MakeMapStrSync create a new instance
+func MakeMapStrSync() MapStrAnySync {
+	return MakeMapStrAnySync()
 }
 
 // MakeStrSync create a new instance
 func MakeStrSync() MapStrAnySync {
+	return MakeMapStrAnySync()
+}
+
+// MakeStrAnySync create a new instance
+func MakeStrAnySync() MapStrAnySync {
+	return MakeMapStrAnySync()
+}
+
+// MakeMapStrAnySync create a new instance
+func MakeMapStrAnySync() MapStrAnySync {
 	return MapStrAnySync{
 		Map: &sync.Map{},
 	}
 }
 
-// MakeStrAnySync create a new instance
-func MakeStrAnySync() MapStrAnySync {
-	return MapStrAnySync{
-		Map: &sync.Map{},
+// SyncOf create a new instance
+func SyncOf(data map[string]interface{}) MapStrAnySync {
+	return MapStrAnySyncOf(data)
+}
+
+// MapSyncOf create a new instance
+func MapSyncOf(data map[string]interface{}) MapStrAnySync {
+	return MapStrAnySyncOf(data)
+}
+
+// MapStrSyncOf create a new instance
+func MapStrSyncOf(data map[string]interface{}) MapStrAnySync {
+	return MapStrAnySyncOf(data)
+}
+
+// StrSyncOf create a new instance
+func StrSyncOf(data map[string]interface{}) MapStrAnySync {
+	return MapStrAnySyncOf(data)
+}
+
+// StrAnySyncOf create a new instance
+func StrAnySyncOf(data map[string]interface{}) MapStrAnySync {
+	return MapStrAnySyncOf(data)
+}
+
+// MapStrAnySyncOf create a new instance
+func MapStrAnySyncOf(data map[string]interface{}) MapStrAnySync {
+	m := MakeMapStrAnySync()
+	for key, value := range data {
+		m.Set(key, value)
 	}
+	return m
 }
 
 // Set set the value for a key

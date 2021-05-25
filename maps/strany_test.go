@@ -28,8 +28,15 @@ func TestStrAnyMake(t *testing.T) {
 	assert.IsType(t, MapStrAny{}, Make())
 	assert.IsType(t, MapStrAny{}, MakeMap())
 	assert.IsType(t, MapStrAny{}, MakeMapStr())
+	assert.IsType(t, MapStrAny{}, MakeStr())
+	assert.IsType(t, MapStrAny{}, MakeStrAny())
+	assert.IsType(t, MapStrAny{}, MakeMapStrAny())
+	assert.IsType(t, MapStrAny{}, Of(map[string]interface{}{"foo": "bar"}))
 	assert.IsType(t, MapStrAny{}, MapOf(map[string]interface{}{"foo": "bar"}))
 	assert.IsType(t, MapStrAny{}, MapStrOf(map[string]interface{}{"foo": "bar"}))
+	assert.IsType(t, MapStrAny{}, StrOf(map[string]interface{}{"foo": "bar"}))
+	assert.IsType(t, MapStrAny{}, StrAnyOf(map[string]interface{}{"foo": "bar"}))
+	assert.IsType(t, MapStrAny{}, MapStrAnyOf(map[string]interface{}{"foo": "bar"}))
 }
 
 func TestStrAnySetBasic(t *testing.T) {
