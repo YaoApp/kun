@@ -1,6 +1,7 @@
 package maps
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -43,12 +44,51 @@ func TestStrAnySyncSetBasic(t *testing.T) {
 	}
 }
 
+func TestStrAnySyncSetBasicConcurrent(t *testing.T) {
+	basic, _, _, _, _ := prepareTestingData()
+	m := MakeMapStrAnySync()
+	var wg sync.WaitGroup
+	for key, value := range basic {
+		wg.Add(1)
+		go func(k string, v interface{}) {
+			defer wg.Done()
+			m.Set(k, v)
+		}(key, value)
+	}
+	wg.Wait()
+	if assert.Equal(t, 16, m.Len(), "The length of map should be 16") {
+		checkBaiscValues(t, m)
+	}
+}
+
 func TestStrAnySyncSetAll(t *testing.T) {
 	_, _, _, _, all := prepareTestingData()
 	m := MakeMapStrAnySync()
 	for key, value := range all {
 		m.Set(key, value)
 	}
+	if assert.Equal(t, 22, m.Len(), "The length of map should be 22") {
+		checkBaiscValues(t, m)
+		checkArrayValues(t, m)
+		checkSliceValues(t, m)
+		checkMapValues(t, m)
+		checkNestedValues(t, m)
+		checkStructValues(t, m)
+	}
+}
+
+func TestStrAnySyncSetAllConcurrent(t *testing.T) {
+	_, _, _, _, all := prepareTestingData()
+	m := MakeMapStrAnySync()
+	var wg sync.WaitGroup
+	for key, value := range all {
+		wg.Add(1)
+		go func(k string, v interface{}) {
+			defer wg.Done()
+			m.Set(k, v)
+		}(key, value)
+	}
+	wg.Wait()
 	if assert.Equal(t, 22, m.Len(), "The length of map should be 22") {
 		checkBaiscValues(t, m)
 		checkArrayValues(t, m)
