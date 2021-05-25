@@ -96,12 +96,13 @@ func (m MapStrAny) dotSet(key string, value interface{}) {
 		for _, sub := range reflectValue.MapKeys() {
 			m.dotSet(fmt.Sprintf("%s.%v", key, sub), reflectValue.MapIndex(sub).Interface())
 		}
-	} else if subMap, ok := value.(MapStrAny); ok { // map[string]interface{}
-		subMap.Range(func(sub string, val interface{}) bool {
-			m.dotSet(sub, val)
-			return true
-		})
 	}
+	// } else if subMap, ok := value.(MapStrAny); ok { // map[string]interface{}
+	// 	subMap.Range(func(sub string, val interface{}) bool {
+	// 		m.dotSet(sub, val)
+	// 		return true
+	// 	})
+	// }
 }
 
 // Set set the value for a key
