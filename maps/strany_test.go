@@ -43,7 +43,7 @@ func TestStrAnySetAll(t *testing.T) {
 	for key, value := range all {
 		m.Set(key, value)
 	}
-	if assert.Equal(t, 21, m.Len(), "The length of map should be 21") {
+	if assert.Equal(t, 22, m.Len(), "The length of map should be 22") {
 		checkBaiscValues(t, m)
 		checkArrayValues(t, m)
 		checkSliceValues(t, m)
@@ -69,6 +69,7 @@ func TestStrAnyKeys(t *testing.T) {
 		"int8",
 		"mapint64",
 		"nested",
+		"nested2",
 		"sliceint64",
 		"string",
 		"struct",
@@ -85,8 +86,8 @@ func TestStrAnyKeysValues(t *testing.T) {
 	m := Of(all)
 	keys := m.Keys()
 	values := m.Values()
-	if assert.Equal(t, 21, len(keys), "The length of map should be 21") {
-		for i := 0; i < 21; i++ {
+	if assert.Equal(t, 22, len(keys), "The length of map should be 21") {
+		for i := 0; i < 22; i++ {
 			key := keys[i]
 			value := values[i]
 			assert.Equal(t, value, m.Get(key))
@@ -94,15 +95,106 @@ func TestStrAnyKeysValues(t *testing.T) {
 	}
 }
 
+func TestStrAnyRange(t *testing.T) {
+	_, _, _, _, all := prepareTestingData()
+	m := Of(all)
+	values := []interface{}{}
+	m.Range(func(key string, value interface{}) bool {
+		values = append(values, value)
+		return true
+	})
+	assert.Equal(t, m.Len(), len(values))
+
+	values = []interface{}{}
+	m.Range(func(key string, value interface{}) bool {
+		values = append(values, value)
+		return false
+	})
+	assert.Equal(t, 1, len(values))
+
+}
+
 func TestStrAnyFlatten(t *testing.T) {
 	_, _, _, _, all := prepareTestingData()
 	flatten := Of(all).Flatten()
-	if assert.Equal(t, 44, flatten.Len(), "The length of map should be 44") {
+	if assert.Equal(t, 62, flatten.Len(), "The length of map should be 62") {
 		values := flatten.Values()
 		for i, key := range flatten.Keys() {
 			assert.Equal(t, values[i], flatten.Get(key))
 		}
 	}
+}
+
+func TestStrAnyHas(t *testing.T) {
+	_, _, _, _, all := prepareTestingData()
+	flatten := Of(all).Flatten()
+	keys := flatten.Keys()
+	if assert.Equal(t, 62, len(keys), "The length of keys should be 62") {
+		for _, key := range keys {
+			assert.True(t, flatten.Has(key))
+		}
+	}
+	assert.False(t, flatten.Has("not_existed_key"))
+}
+
+func TestStrAnyDel(t *testing.T) {
+	_, _, _, _, all := prepareTestingData()
+	m := Of(all)
+	keys := m.Keys()
+	if assert.Equal(t, 22, len(keys), "The length of keys should be 22") {
+		for _, key := range keys {
+			m.Del(key)
+		}
+	}
+	assert.Equal(t, 0, m.Len())
+}
+
+func TestStrAnyGetAndDel(t *testing.T) {
+	_, _, _, _, all := prepareTestingData()
+	m := Of(all)
+	keys := m.Keys()
+	valuesBefore := m.Values()
+	valuesAfter := []interface{}{}
+	if assert.Equal(t, 22, len(keys), "The length of keys should be 22") {
+		for _, key := range keys {
+			valuesAfter = append(valuesAfter, m.GetAndDel(key))
+		}
+	}
+	assert.Equal(t, 0, m.Len())
+	assert.Equal(t, 0, len(m.Values()))
+	assert.Equal(t, valuesBefore, valuesAfter)
+}
+
+func TestStrAnyGetOrSet(t *testing.T) {
+	_, _, _, _, all := prepareTestingData()
+	m := Of(all)
+	keys := m.Keys()
+	valuesBefore := m.Values()
+	valuesAfter := []interface{}{}
+	if assert.Equal(t, 22, len(keys), "The length of keys should be 22") {
+		for _, key := range keys {
+			valuesAfter = append(valuesAfter, m.GetOrSet(key, "getorset"))
+		}
+	}
+	assert.Equal(t, 22, m.Len())
+	assert.Equal(t, valuesBefore, valuesAfter)
+
+	value := m.GetOrSet("new-key", "getorset")
+	assert.Equal(t, 23, m.Len())
+	assert.Equal(t, value, "getorset")
+	assert.Equal(t, value, m.Get("new-key"))
+}
+
+func TestStrAnyIsEmpty(t *testing.T) {
+	_, _, _, _, all := prepareTestingData()
+	m := Of(all)
+	keys := m.Keys()
+	if assert.Equal(t, 22, len(keys), "The length of keys should be 22") {
+		for _, key := range keys {
+			m.Del(key)
+		}
+	}
+	assert.True(t, m.IsEmpty())
 }
 
 func checkArrayValues(t *testing.T, m MapStrAny) {
@@ -228,6 +320,10 @@ func prepareTestingData() (map[string]interface{}, map[string]interface{}, map[s
 	allValues["nested"].(map[string]interface{})["basic"] = map[string]interface{}{}
 	for key, value := range baiscValues {
 		allValues["nested"].(map[string]interface{})["basic"].(map[string]interface{})[key] = value
+	}
+
+	allValues["nested2"] = Map{
+		"basic": Of(baiscValues),
 	}
 
 	return baiscValues, arrayValues, sliceValues, mapValues, allValues
