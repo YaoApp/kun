@@ -19,6 +19,10 @@ The name Kun comes from the Chinese word 坤(kūn). It is one of the eight trigr
 
 ### Map
 
+### MapStrAny (Default)
+
+### MapAnyAny
+
 ### Arr
 
 ### Set
