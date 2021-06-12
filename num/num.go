@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strconv"
 )
 
@@ -51,6 +52,10 @@ func (n *Number) Float64() float64 {
 		return n.value.(float64)
 	case float32:
 		return float64(n.value.(float32))
+	case complex128:
+		return real(n.value.(complex128))
+	case complex64:
+		return float64(real(n.value.(complex64)))
 	}
 
 	value, err := strconv.ParseFloat(fmt.Sprintf("%v", n.value), 64)
@@ -80,14 +85,71 @@ func (n *Number) Float32() float32 {
 	return float32(value)
 }
 
-// Complex128 the return value is the type of complex128
-func (n Number) Complex128() complex128 {
-	return 0
+// Complex is alias of Complex128 converts and returns as complex128
+func (n *Number) Complex() complex128 {
+	return n.Complex128()
 }
 
-// Complex64 the return value is the type of complex64
-func (n Number) Complex64() complex64 {
-	return 0
+// Complex128 converts and returns as complex128
+func (n *Number) Complex128() complex128 {
+	value, ok := n.value.(complex128)
+	if ok {
+		return value
+	}
+
+	value64, ok := n.value.(complex64)
+	if ok {
+		return complex128(value64)
+	}
+
+	valueStr, ok := n.value.(string)
+	if ok {
+		// 1.56+2.48i
+		re := regexp.MustCompile(`[ \()]*([0-9\.]+)[ ]*\+[ ]*([0-9\.]+)i[ \)]*`)
+		matched := re.FindStringSubmatch(valueStr)
+		if len(matched) > 0 {
+			return complex(Of(matched[1]).Float64(), Of(matched[2]).Float64())
+		}
+
+		// (1.56,2.48i)
+		re = regexp.MustCompile(`\([ ]*([0-9\.]+)[ ]*,[ ]*([0-9\.]+)[ ]*\)`)
+		matched = re.FindStringSubmatch(valueStr)
+		if len(matched) > 0 {
+			return complex(Of(matched[1]).Float64(), Of(matched[2]).Float64())
+		}
+	}
+	return complex(n.Float64(), 0)
+}
+
+// Complex64 converts and returns as Complex64
+func (n *Number) Complex64() complex64 {
+	value, ok := n.value.(complex64)
+	if ok {
+		return value
+	}
+
+	value128, ok := n.value.(complex128)
+	if ok {
+		return complex64(value128)
+	}
+
+	valueStr, ok := n.value.(string)
+	if ok {
+		// 1.56+2.48i
+		re := regexp.MustCompile(`[ \()]*([0-9\.]+)[ ]*\+[ ]*([0-9\.]+)i[ \)]*`)
+		matched := re.FindStringSubmatch(valueStr)
+		if len(matched) > 0 {
+			return complex(Of(matched[1]).Float32(), Of(matched[2]).Float32())
+		}
+
+		// (1.56,2.48i)
+		re = regexp.MustCompile(`\([ ]*([0-9\.]+)[ ]*,[ ]*([0-9\.]+)[ ]*\)`)
+		matched = re.FindStringSubmatch(valueStr)
+		if len(matched) > 0 {
+			return complex(Of(matched[1]).Float32(), Of(matched[2]).Float32())
+		}
+	}
+	return complex(n.Float32(), 0.0)
 }
 
 // Int64 the return value is the type of int64 and remove the decimal
@@ -219,6 +281,16 @@ func (n *Number) IsInt() bool {
 func (n *Number) IsFloat() bool {
 	switch n.value.(type) {
 	case float32, float64:
+		return true
+	default:
+		return false
+	}
+}
+
+// IsComplex checks whether <v> is type of complex.
+func (n *Number) IsComplex() bool {
+	switch n.value.(type) {
+	case complex128, complex64:
 		return true
 	default:
 		return false

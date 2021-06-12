@@ -26,6 +26,9 @@ func TestSet(t *testing.T) {
 
 func TestFloat(t *testing.T) {
 	assert.Equal(t, 0.0, Of(nil).Float())
+	assert.Equal(t, 1.0, Of(1).Float())
+	assert.Equal(t, 1.618, Of(1.618+2.382i).Float())
+	assert.Equal(t, 1.0, Of(complex64(1+2.382i)).Float())
 	assert.Equal(t, 0.618, Of(0.618).Float())
 	assert.Equal(t, float64(float32(0.618)), Of(float32(0.618)).Float())
 	assert.Equal(t, 0.618, Of("0.618").Float())
@@ -57,6 +60,8 @@ func TestInt(t *testing.T) {
 	assert.Equal(t, 0, Of(0.312).Int())
 	assert.Equal(t, 1, Of(0.618).Int())
 	assert.Equal(t, 1, Of(float32(0.618)).Int())
+	assert.Equal(t, 2, Of(1.618+2.382i).Int())
+	assert.Equal(t, 2, Of(complex64(1.618+2.382i)).Int())
 	assert.Equal(t, 10, Of("10").Int())
 	assert.Equal(t, 0, Of("0.312").Int())
 	assert.Equal(t, 1, Of("0.618").Int())
@@ -113,6 +118,32 @@ func TestUint64(t *testing.T) {
 func TestUintptr(t *testing.T) {
 	assert.Equal(t, uintptr(1), Of(uintptr(1)).Uintptr())
 	assert.Equal(t, uintptr(1), Of(1).Uintptr())
+}
+
+func TestComplex(t *testing.T) {
+	assert.Equal(t, 1.28+2.56i, Of(1.28+2.56i).Complex())
+	assert.Equal(t, 1.28+2.56i, Of(" 1.28+ 2.56i ").Complex())
+	assert.Equal(t, 1.28+2.56i, Of("( 1.28+ 2.56i )").Complex())
+	assert.Equal(t, 1.28+2.56i, Of("( 1.28,2.56 )").Complex())
+	assert.Equal(t, 1.28+0i, Of("1.28").Complex())
+	assert.Equal(t, 1.28+0i, Of(1.28).Complex())
+	assert.Equal(t, 1.0+0i, Of(1).Complex())
+}
+
+func TestComplex64(t *testing.T) {
+	assert.Equal(t, complex64(1.28+2.56i), Of(1.28+2.56i).Complex64())
+	assert.Equal(t, complex64(1.28+2.56i), Of(" 1.28+ 2.56i ").Complex64())
+	assert.Equal(t, complex64(1.28+2.56i), Of("( 1.28+ 2.56i )").Complex64())
+	assert.Equal(t, complex64(1.28+2.56i), Of("( 1.28,2.56 )").Complex64())
+	assert.Equal(t, complex64(1.28+0i), Of("1.28").Complex64())
+	assert.Equal(t, complex64(1.28+0i), Of(1.28).Complex64())
+	assert.Equal(t, complex64(1.0+0i), Of(1).Complex64())
+}
+
+func TestIsComplex(t *testing.T) {
+	assert.Equal(t, true, Of(1.28+2.56i).IsComplex())
+	assert.Equal(t, true, Of(complex64(1.28+2.56i)).IsComplex())
+	assert.Equal(t, false, Of(true).IsComplex())
 }
 
 func TestIsInt(t *testing.T) {
