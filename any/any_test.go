@@ -108,4 +108,9 @@ func TestCInt(t *testing.T) {
 
 	v.Set("20")
 	assert.Equal(t, 20, v.CInt())
+
+	v.Set("error")
+	assert.Panics(t, func() {
+		fmt.Println(v.CInt())
+	})
 }
