@@ -145,10 +145,10 @@ func (v *Any) CInt() int {
 	if ok {
 		return value
 	}
-	value, err := strconv.Atoi(fmt.Sprintf("%.0f", v.CFloat64()))
-	if err != nil {
-		panic(err.Error())
-	}
+	value, _ = strconv.Atoi(fmt.Sprintf("%.0f", v.CFloat64()))
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
 	return value
 }
 
