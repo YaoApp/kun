@@ -45,6 +45,25 @@ func (v *Any) Interface() interface{} {
 	return v.Get()
 }
 
+// Interfaces converts and returns <v> as []interfaces{}.
+func (v *Any) Interfaces() []interface{} {
+	if v.value == nil {
+		return []interface{}{}
+	}
+	values := reflect.ValueOf(v.value)
+	values = reflect.Indirect(values)
+	kind := values.Kind()
+	if kind != reflect.Array && kind != reflect.Slice {
+		return []interface{}{v.value}
+	}
+	res := []interface{}{}
+	for i := 0; i < values.Len(); i++ {
+		v := values.Index(i).Interface()
+		res = append(res, v)
+	}
+	return res
+}
+
 // String returns <v> as string.
 func (v *Any) String() string {
 	if v.value == nil {
@@ -162,7 +181,7 @@ func (v *Any) CInts() []int {
 	return res
 }
 
-// Float alias Float64 returns <v> as float64
+// Float is alias of Float64 returns <v> as float64
 func (v *Any) Float() float64 {
 	return v.Float64()
 }
@@ -180,7 +199,7 @@ func (v *Any) Float64() float64 {
 	return value
 }
 
-// CFloat alias CFloat64 converts and returns <v> as float64
+// CFloat is alias of CFloat64 converts and returns <v> as float64
 func (v *Any) CFloat() float64 {
 	return v.CFloat64()
 }
@@ -203,7 +222,7 @@ func (v *Any) CFloat64() float64 {
 	return value
 }
 
-// Floats alias Float64s returns <v> as []float64
+// Floats is alias of Float64s returns <v> as []float64
 func (v *Any) Floats() []float64 {
 	return v.Float64s()
 }
@@ -220,7 +239,7 @@ func (v *Any) Float64s() []float64 {
 	return value
 }
 
-// CFloats alias CFloat64s converts and returns <v> as []float64
+// CFloats is alias of CFloat64s converts and returns <v> as []float64
 func (v *Any) CFloats() []float64 {
 	return v.CFloat64s()
 }

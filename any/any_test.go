@@ -35,6 +35,20 @@ func TestGet(t *testing.T) {
 	assert.Equal(t, 1, v.Interface())
 }
 
+func TestInterfaces(t *testing.T) {
+	v := Of([]interface{}{"hello", 1, true})
+	assert.Equal(t, []interface{}{"hello", 1, true}, v.Interfaces())
+
+	v.Set(nil)
+	assert.Equal(t, []interface{}{}, v.Interfaces())
+
+	v.Set([]string{"hello", "world"})
+	assert.Equal(t, []interface{}{"hello", "world"}, v.Interfaces())
+
+	v.Set("hello")
+	assert.Equal(t, []interface{}{"hello"}, v.Interfaces())
+}
+
 func TestString(t *testing.T) {
 	v := Of("hello")
 	assert.Equal(t, "hello", v.String())
