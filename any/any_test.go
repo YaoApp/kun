@@ -40,7 +40,7 @@ func TestString(t *testing.T) {
 	assert.Equal(t, "hello", v.String())
 	v.Set(1)
 	assert.Panics(t, func() {
-		fmt.Printf(v.String())
+		fmt.Println(v.String())
 	})
 }
 
@@ -49,4 +49,24 @@ func TestCString(t *testing.T) {
 	assert.Equal(t, "hello", v.CString())
 	v.Set(1)
 	assert.Equal(t, "1", v.CString())
+}
+
+func TestStrings(t *testing.T) {
+	v := Of([]string{"hello", "world"})
+	assert.Equal(t, []string{"hello", "world"}, v.Strings())
+	v.Set("hello")
+	assert.Panics(t, func() {
+		fmt.Println(v.Strings())
+	})
+}
+
+func TestCStrings(t *testing.T) {
+	v := Of([]interface{}{"hello", 1, true})
+	assert.Equal(t, []string{"hello", "1", "true"}, v.CStrings())
+
+	v.Set([]string{"hello", "world"})
+	assert.Equal(t, []string{"hello", "world"}, v.CStrings())
+
+	v.Set("hello")
+	assert.Equal(t, []string{"hello"}, v.CStrings())
 }
