@@ -114,3 +114,30 @@ func TestCInt(t *testing.T) {
 		fmt.Println(v.CInt())
 	})
 }
+
+func TestInts(t *testing.T) {
+	v := Of([]int{1, 2})
+	assert.Equal(t, []int{1, 2}, v.Ints())
+
+	v.Set(nil)
+	assert.Equal(t, []int{}, v.Ints())
+
+	v.Set("hello")
+	assert.Panics(t, func() {
+		fmt.Println(v.Ints())
+	})
+}
+
+func TestCInts(t *testing.T) {
+	v := Of([]interface{}{1, 2, "3"})
+	assert.Equal(t, []int{1, 2, 3}, v.CInts())
+
+	v.Set(nil)
+	assert.Equal(t, []int{}, v.CInts())
+
+	v.Set([]string{"5", "6"})
+	assert.Equal(t, []int{5, 6}, v.CInts())
+
+	v.Set(7)
+	assert.Equal(t, []int{7}, v.CInts())
+}

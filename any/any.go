@@ -80,6 +80,10 @@ func (v *Any) Strings() []string {
 
 // CStrings converts and returns <v> as []string.
 func (v *Any) CStrings() []string {
+	if v.value == nil {
+		return []string{}
+	}
+
 	values := reflect.ValueOf(v.value)
 	values = reflect.Indirect(values)
 	kind := values.Kind()
@@ -109,6 +113,11 @@ func (v *Any) Int() int {
 
 // CInt converts and returns <v> as int
 func (v *Any) CInt() int {
+
+	if v.value == nil {
+		return 0
+	}
+
 	value, ok := v.value.(int)
 	if ok {
 		return value
@@ -118,6 +127,39 @@ func (v *Any) CInt() int {
 		panic(err.Error())
 	}
 	return value
+}
+
+// Ints returns <v> as []int
+func (v *Any) Ints() []int {
+	if v.value == nil {
+		return []int{}
+	}
+	value, ok := v.value.([]int)
+	if !ok {
+		panic("v is not a type of []int")
+	}
+	return value
+}
+
+// CInts converts and returns <v> as []int
+func (v *Any) CInts() []int {
+
+	if v.value == nil {
+		return []int{}
+	}
+
+	values := reflect.ValueOf(v.value)
+	values = reflect.Indirect(values)
+	kind := values.Kind()
+	if kind != reflect.Array && kind != reflect.Slice {
+		return []int{Of(v.value).CInt()}
+	}
+	res := []int{}
+	for i := 0; i < values.Len(); i++ {
+		v := values.Index(i).Interface()
+		res = append(res, Of(v).CInt())
+	}
+	return res
 }
 
 // Scan for db scan
