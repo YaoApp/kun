@@ -122,6 +122,7 @@ func TestUintptr(t *testing.T) {
 
 func TestComplex(t *testing.T) {
 	assert.Equal(t, 1.28+2.56i, Of(1.28+2.56i).Complex())
+	assert.Equal(t, 1.0+2.00i, Of(complex64(1.0+2.0i)).Complex())
 	assert.Equal(t, 1.28+2.56i, Of(" 1.28+ 2.56i ").Complex())
 	assert.Equal(t, 1.28+2.56i, Of("( 1.28+ 2.56i )").Complex())
 	assert.Equal(t, 1.28+2.56i, Of("( 1.28,2.56 )").Complex())
@@ -132,6 +133,7 @@ func TestComplex(t *testing.T) {
 
 func TestComplex64(t *testing.T) {
 	assert.Equal(t, complex64(1.28+2.56i), Of(1.28+2.56i).Complex64())
+	assert.Equal(t, complex64(1.0+2.00i), Of(complex64(1.0+2.0i)).Complex64())
 	assert.Equal(t, complex64(1.28+2.56i), Of(" 1.28+ 2.56i ").Complex64())
 	assert.Equal(t, complex64(1.28+2.56i), Of("( 1.28+ 2.56i )").Complex64())
 	assert.Equal(t, complex64(1.28+2.56i), Of("( 1.28,2.56 )").Complex64())
