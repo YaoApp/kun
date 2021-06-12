@@ -162,6 +162,47 @@ func (v *Any) CInts() []int {
 	return res
 }
 
+// Float alias Float64 returns <v> as float64
+func (v *Any) Float() float64 {
+	return v.Float64()
+}
+
+// Float64 returns <v> as float64
+func (v *Any) Float64() float64 {
+	if v.value == nil {
+		return 0
+	}
+
+	value, ok := v.value.(float64)
+	if !ok {
+		panic("v is not a type of float64")
+	}
+	return value
+}
+
+// CFloat alias CFloat64 converts and returns <v> as float64
+func (v *Any) CFloat() float64 {
+	return v.CFloat64()
+}
+
+// CFloat64 converts and returns <v> as float64
+func (v *Any) CFloat64() float64 {
+
+	if v.value == nil {
+		return 0
+	}
+
+	value, ok := v.value.(float64)
+	if ok {
+		return value
+	}
+	value, err := strconv.ParseFloat(fmt.Sprintf("%v", v.value), 64)
+	if err != nil {
+		panic(err.Error())
+	}
+	return value
+}
+
 // Scan for db scan
 func (v *Any) Scan(src interface{}) error {
 	*v = *Of(src)

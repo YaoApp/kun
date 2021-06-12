@@ -141,3 +141,32 @@ func TestCInts(t *testing.T) {
 	v.Set(7)
 	assert.Equal(t, []int{7}, v.CInts())
 }
+
+func TestFloat(t *testing.T) {
+	v := Of(10.056)
+	assert.Equal(t, 10.056, v.Float())
+
+	v.Set(nil)
+	assert.Equal(t, 0.0, v.Float())
+
+	v.Set("hello")
+	assert.Panics(t, func() {
+		fmt.Println(v.Float())
+	})
+}
+
+func TestCFloat(t *testing.T) {
+	v := Of(10.056)
+	assert.Equal(t, 10.056, v.CFloat())
+
+	v.Set(nil)
+	assert.Equal(t, 0.0, v.CFloat())
+
+	v.Set("20.018")
+	assert.Equal(t, 20.018, v.CFloat())
+
+	v.Set("error")
+	assert.Panics(t, func() {
+		fmt.Println(v.CFloat())
+	})
+}
