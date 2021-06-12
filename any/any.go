@@ -352,7 +352,7 @@ func (v *Any) IsCollection() bool {
 
 // IsSet checks whether <v> is not nil.
 func (v *Any) IsSet() bool {
-	return !v.IsNil()
+	return v.value != nil
 }
 
 // IsNil checks whether <v> is nil.
