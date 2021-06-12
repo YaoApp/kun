@@ -170,3 +170,30 @@ func TestCFloat(t *testing.T) {
 		fmt.Println(v.CFloat())
 	})
 }
+
+func TestFloats(t *testing.T) {
+	v := Of([]float64{1.618, 2.154})
+	assert.Equal(t, []float64{1.618, 2.154}, v.Floats())
+
+	v.Set(nil)
+	assert.Equal(t, []float64{}, v.Floats())
+
+	v.Set("hello")
+	assert.Panics(t, func() {
+		fmt.Println(v.Floats())
+	})
+}
+
+func TestCFloats(t *testing.T) {
+	v := Of([]interface{}{1.618, 2.154, "3.617"})
+	assert.Equal(t, []float64{1.618, 2.154, 3.617}, v.CFloats())
+
+	v.Set(nil)
+	assert.Equal(t, []float64{}, v.CFloats())
+
+	v.Set([]string{"5.10", "6.18"})
+	assert.Equal(t, []float64{5.10, 6.18}, v.CFloats())
+
+	v.Set(7.46)
+	assert.Equal(t, []float64{7.46}, v.CFloats())
+}

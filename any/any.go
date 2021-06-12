@@ -203,6 +203,49 @@ func (v *Any) CFloat64() float64 {
 	return value
 }
 
+// Floats alias Float64s returns <v> as []float64
+func (v *Any) Floats() []float64 {
+	return v.Float64s()
+}
+
+// Float64s returns <v> as []float64
+func (v *Any) Float64s() []float64 {
+	if v.value == nil {
+		return []float64{}
+	}
+	value, ok := v.value.([]float64)
+	if !ok {
+		panic("v is not a type of []float64")
+	}
+	return value
+}
+
+// CFloats alias CFloat64s converts and returns <v> as []float64
+func (v *Any) CFloats() []float64 {
+	return v.CFloat64s()
+}
+
+// CFloat64s converts and returns <v> as []float64
+func (v *Any) CFloat64s() []float64 {
+
+	if v.value == nil {
+		return []float64{}
+	}
+
+	values := reflect.ValueOf(v.value)
+	values = reflect.Indirect(values)
+	kind := values.Kind()
+	if kind != reflect.Array && kind != reflect.Slice {
+		return []float64{Of(v.value).CFloat64()}
+	}
+	res := []float64{}
+	for i := 0; i < values.Len(); i++ {
+		v := values.Index(i).Interface()
+		res = append(res, Of(v).CFloat64())
+	}
+	return res
+}
+
 // Scan for db scan
 func (v *Any) Scan(src interface{}) error {
 	*v = *Of(src)
