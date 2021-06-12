@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/yaoapp/kun/num"
 )
 
 func TestMake(t *testing.T) {
@@ -280,8 +281,11 @@ func TestNumber(t *testing.T) {
 	num2 := Of(1.618 + 0.532i).Number()
 	assert.Equal(t, 1.618+0.532i, num2.Complex())
 
-	num3 := Of(1.618).Number()
-	assert.Equal(t, 2, num3.Int())
+	num3 := Of(num.Of(0.618)).Number()
+	assert.Equal(t, 1, num3.Int())
+
+	num4 := Of(*num.Of(0.618)).Number()
+	assert.Equal(t, 1, num4.Int())
 }
 
 func TestMap(t *testing.T) {
