@@ -3,6 +3,8 @@ package num
 import (
 	"database/sql/driver"
 	"encoding/json"
+	"fmt"
+	"strconv"
 )
 
 // Number type of numberic
@@ -10,24 +12,72 @@ type Number struct {
 	value interface{}
 }
 
+// Make create a empty instance
+func Make() *Number {
+	return &Number{value: nil}
+}
+
 // Of make a new number
-func Of(value interface{}) Number {
-	return Number{value: value}
+func Of(value interface{}) *Number {
+	return &Number{value: value}
+}
+
+// Set set <value> to <v>, and returns the old value.
+func (n *Number) Set(value interface{}) (old interface{}) {
+	old = n.value
+	n.value = value
+	return old
 }
 
 // ToFixed the return value is the type of float64 and keeps the given decimal places
-func (n Number) ToFixed(places int) float64 {
-	return 0
+func (n *Number) ToFixed(places int) string {
+	format := fmt.Sprintf("%%.%df", places)
+	return fmt.Sprintf(format, n.Float64())
 }
 
-// Float64 the return value is the type of float64
-func (n Number) Float64() float64 {
-	return 0
+// Float is alias of Float64 converts and returns as float64
+func (n *Number) Float() float64 {
+	return n.Float64()
 }
 
-// Float32 the return value is the type of float32
-func (n Number) Float32() float32 {
-	return 0
+// Float64 converts and returns as float64
+func (n *Number) Float64() float64 {
+	if n.value == nil {
+		return 0.0
+	}
+
+	switch n.value.(type) {
+	case float64:
+		return n.value.(float64)
+	case float32:
+		return float64(n.value.(float32))
+	}
+
+	value, err := strconv.ParseFloat(fmt.Sprintf("%v", n.value), 64)
+	if err != nil {
+		panic(err.Error())
+	}
+	return value
+}
+
+// Float32  converts and returns as float32
+func (n *Number) Float32() float32 {
+	if n.value == nil {
+		return 0.0
+	}
+
+	switch n.value.(type) {
+	case float64:
+		return float32(n.value.(float64))
+	case float32:
+		return n.value.(float32)
+	}
+
+	value, err := strconv.ParseFloat(fmt.Sprintf("%v", n.value), 32)
+	if err != nil {
+		panic(err.Error())
+	}
+	return float32(value)
 }
 
 // Complex128 the return value is the type of complex128
@@ -97,7 +147,7 @@ func (n Number) Uintptr() uintptr {
 
 // Scan for db scan
 func (n *Number) Scan(src interface{}) error {
-	*n = Of(src)
+	*n = *Of(src)
 	return nil
 }
 
@@ -118,6 +168,6 @@ func (n *Number) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	*n = Of(v)
+	*n = *Of(v)
 	return nil
 }

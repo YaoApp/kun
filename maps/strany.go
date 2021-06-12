@@ -136,7 +136,7 @@ func (m MapStrAny) Set(key string, value interface{}) {
 	m[key] = value
 }
 
-// Get turns the value stored in the map for a key, or nil if no value is present.
+// Get returns the value stored in the map for a key, or nil if no value is present.
 func (m MapStrAny) Get(key string) interface{} {
 	return m[key]
 }

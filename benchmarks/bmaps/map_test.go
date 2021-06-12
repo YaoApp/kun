@@ -15,8 +15,3 @@ func BenchmarkMapStrSet(t *testing.B) {
 	m := maps.MakeMapStr()
 	m.Set("foo", "bar")
 }
-
-func BenchmarkMapStrStrSet(t *testing.B) {
-	m := maps.MakeMapStrStr()
-	m.Set("foo", "bar")
-}
