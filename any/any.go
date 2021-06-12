@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"strconv"
 )
 
 // Any the replacement for interface{}
@@ -91,6 +92,32 @@ func (v *Any) CStrings() []string {
 		res = append(res, Of(v).CString())
 	}
 	return res
+}
+
+// Int returns <v> as int
+func (v *Any) Int() int {
+	if v.value == nil {
+		return 0
+	}
+
+	value, ok := v.value.(int)
+	if !ok {
+		panic("v is not a type of int")
+	}
+	return value
+}
+
+// CInt converts and returns <v> as int
+func (v *Any) CInt() int {
+	value, ok := v.value.(int)
+	if ok {
+		return value
+	}
+	value, err := strconv.Atoi(fmt.Sprintf("%v", v.value))
+	if err != nil {
+		panic(err.Error())
+	}
+	return value
 }
 
 // Scan for db scan

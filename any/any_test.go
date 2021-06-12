@@ -70,3 +70,19 @@ func TestCStrings(t *testing.T) {
 	v.Set("hello")
 	assert.Equal(t, []string{"hello"}, v.CStrings())
 }
+
+func TestInt(t *testing.T) {
+	v := Of(10)
+	assert.Equal(t, 10, v.Int())
+	v.Set("hello")
+	assert.Panics(t, func() {
+		fmt.Println(v.Int())
+	})
+}
+
+func TestCInt(t *testing.T) {
+	v := Of(10)
+	assert.Equal(t, 10, v.CInt())
+	v.Set("20")
+	assert.Equal(t, 20, v.CInt())
+}
