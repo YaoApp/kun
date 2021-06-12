@@ -211,3 +211,125 @@ func TestCFloats(t *testing.T) {
 	v.Set(7.46)
 	assert.Equal(t, []float64{7.46}, v.CFloats())
 }
+
+func TestBool(t *testing.T) {
+	v := Of(false)
+	assert.Equal(t, false, v.Bool())
+
+	v.Set(true)
+	assert.Equal(t, true, v.Bool())
+
+	v.Set(nil)
+	assert.Equal(t, false, v.Bool())
+
+	v.Set("hello")
+	assert.Panics(t, func() {
+		fmt.Println(v.Bool())
+	})
+}
+
+func TestCBool(t *testing.T) {
+	v := Of(false)
+	assert.Equal(t, false, v.CBool())
+
+	v.Set(true)
+	assert.Equal(t, true, v.CBool())
+
+	v.Set(nil)
+	assert.Equal(t, false, v.CBool())
+	v.Set("true")
+	assert.Equal(t, true, v.CBool())
+
+	v.Set("T")
+	assert.Equal(t, true, v.CBool())
+
+	v.Set("TRUE")
+	assert.Equal(t, true, v.CBool())
+
+	v.Set("1")
+	assert.Equal(t, true, v.CBool())
+
+	v.Set(1)
+	assert.Equal(t, true, v.CBool())
+
+	v.Set("false")
+	assert.Equal(t, false, v.CBool())
+
+	v.Set("FALSE")
+	assert.Equal(t, false, v.CBool())
+
+	v.Set("F")
+	assert.Equal(t, false, v.CBool())
+
+	v.Set("0")
+	assert.Equal(t, false, v.CBool())
+
+	v.Set(0)
+	assert.Equal(t, false, v.CBool())
+
+	v.Set("-10")
+	assert.Panics(t, func() {
+		fmt.Println(v.CBool())
+	})
+}
+
+func TestIsBool(t *testing.T) {
+	assert.Equal(t, true, Of(true).IsBool())
+	assert.Equal(t, true, Of(false).IsBool())
+	assert.Equal(t, false, Of(0).IsBool())
+	assert.Equal(t, false, Of(1).IsBool())
+}
+
+func TestIsInt(t *testing.T) {
+	assert.Equal(t, true, Of(1).IsInt())
+	assert.Equal(t, true, Of(int8(1)).IsInt())
+	assert.Equal(t, false, Of(true).IsInt())
+}
+
+func TestIsFloat(t *testing.T) {
+	assert.Equal(t, true, Of(1.618).IsFloat())
+	assert.Equal(t, true, Of(float32(1.382)).IsFloat())
+	assert.Equal(t, false, Of(5).IsFloat())
+}
+
+func TestIsSlice(t *testing.T) {
+	assert.Equal(t, true, Of([]string{"hello", "world"}).IsSlice())
+	assert.Equal(t, false, Of([2]string{"hello", "world"}).IsSlice())
+	assert.Equal(t, false, Of(5).IsSlice())
+}
+
+func TestIsArray(t *testing.T) {
+	assert.Equal(t, true, Of([2]string{"hello", "world"}).IsArray())
+	assert.Equal(t, false, Of([]string{"hello", "world"}).IsArray())
+	assert.Equal(t, false, Of(5).IsArray())
+}
+
+func TestIsCollection(t *testing.T) {
+	assert.Equal(t, true, Of([2]string{"hello", "world"}).IsCollection())
+	assert.Equal(t, true, Of([]string{"hello", "world"}).IsCollection())
+	assert.Equal(t, false, Of(5).IsCollection())
+}
+
+func TestIsSet(t *testing.T) {
+	assert.Equal(t, true, Of(1).IsSet())
+	assert.Equal(t, false, Of(nil).IsSet())
+}
+
+func TestIsNil(t *testing.T) {
+	assert.Equal(t, false, Of(1).IsNil())
+	assert.Equal(t, true, Of(nil).IsNil())
+}
+
+func TestIsEmpty(t *testing.T) {
+	assert.Equal(t, true, Of(nil).IsEmpty())
+	assert.Equal(t, true, Of("0").IsEmpty())
+	assert.Equal(t, true, Of("F").IsEmpty())
+	assert.Equal(t, true, Of("false").IsEmpty())
+	assert.Equal(t, true, Of("").IsEmpty())
+	assert.Equal(t, true, Of(0).IsEmpty())
+	assert.Equal(t, true, Of(0.0).IsEmpty())
+	assert.Equal(t, true, Of(false).IsEmpty())
+	assert.Equal(t, true, Of([]string{}).IsEmpty())
+	assert.Equal(t, true, Of([0]string{}).IsEmpty())
+	assert.Equal(t, false, Of(true).IsEmpty())
+}

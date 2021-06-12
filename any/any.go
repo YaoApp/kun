@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 // Any the replacement for interface{}
@@ -263,6 +264,126 @@ func (v *Any) CFloat64s() []float64 {
 		res = append(res, Of(v).CFloat64())
 	}
 	return res
+}
+
+// Bool returns <v> as bool
+func (v *Any) Bool() bool {
+	if v.value == nil {
+		return false
+	}
+
+	value, ok := v.value.(bool)
+	if !ok {
+		panic("v is not a type of bool")
+	}
+	return value
+}
+
+// CBool converts and returns <v> as bool
+func (v *Any) CBool() bool {
+
+	if v.value == nil {
+		return false
+	}
+
+	value, ok := v.value.(bool)
+	if ok {
+		return value
+	}
+
+	value, err := strconv.ParseBool(fmt.Sprintf("%v", v.value))
+	if err != nil {
+		panic(err.Error())
+	}
+	return value
+}
+
+// IsBool checks whether <v> is type of bool.
+func (v *Any) IsBool() bool {
+	switch v.value.(type) {
+	case bool:
+		return true
+	default:
+		return false
+	}
+}
+
+// IsInt checks whether <v> is type of int.
+func (v *Any) IsInt() bool {
+	switch v.value.(type) {
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+		return true
+	default:
+		return false
+	}
+}
+
+// IsFloat checks whether <v> is type of float.
+func (v *Any) IsFloat() bool {
+	switch v.value.(type) {
+	case float32, float64:
+		return true
+	default:
+		return false
+	}
+}
+
+// IsSlice checks whether <v> is type of slice.
+func (v *Any) IsSlice() bool {
+	values := reflect.ValueOf(v.value)
+	values = reflect.Indirect(values)
+	return values.Kind() == reflect.Slice
+}
+
+// IsArray checks whether <v> is type of array.
+func (v *Any) IsArray() bool {
+	values := reflect.ValueOf(v.value)
+	values = reflect.Indirect(values)
+	return values.Kind() == reflect.Array
+}
+
+// IsCollection checks whether <v> is type of array or slice.
+func (v *Any) IsCollection() bool {
+	values := reflect.ValueOf(v.value)
+	values = reflect.Indirect(values)
+	kind := values.Kind()
+	return kind == reflect.Array || kind == reflect.Slice
+}
+
+// IsSet checks whether <v> is not nil.
+func (v *Any) IsSet() bool {
+	return !v.IsNil()
+}
+
+// IsNil checks whether <v> is nil.
+func (v *Any) IsNil() bool {
+	return v.value == nil
+}
+
+// IsEmpty checks whether <v> is empty.
+func (v *Any) IsEmpty() bool {
+	if v.value == nil {
+		return true
+	}
+
+	if v.IsInt() {
+		return v.CInt() == 0
+	}
+
+	if v.IsFloat() {
+		return v.CFloat64() == 0.0
+	}
+
+	if v.IsBool() {
+		return v.Bool() == false
+	}
+
+	if v.IsCollection() {
+		return len(v.Interfaces()) == 0
+	}
+
+	str := v.CString()
+	return str == "" || str == "0" || strings.ToLower(str) == "false" || strings.ToLower(str) == "f"
 }
 
 // Scan for db scan
