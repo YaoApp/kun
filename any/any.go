@@ -7,6 +7,8 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/yaoapp/kun/maps"
 )
 
 // Any the replacement for interface{}
@@ -298,6 +300,30 @@ func (v *Any) CBool() bool {
 	return value
 }
 
+// Map converts and returns <v> as maps.Map
+func (v *Any) Map() maps.Map {
+	switch v.value.(type) {
+	case maps.Map:
+		return v.value.(maps.Map)
+	case map[string]interface{}:
+		return maps.Of(v.value.(map[string]interface{}))
+	}
+
+	// converts to map
+	values := reflect.ValueOf(v.value)
+	values = reflect.Indirect(values)
+	if values.Kind() == reflect.Map {
+		valuesMap := map[string]interface{}{}
+		for _, key := range values.MapKeys() {
+			k := fmt.Sprintf("%v", key)
+			valuesMap[k] = values.MapIndex(key).Interface()
+		}
+		return maps.Of(valuesMap)
+	}
+
+	panic("v is not a type not a map")
+}
+
 // IsBool checks whether <v> is type of bool.
 func (v *Any) IsBool() bool {
 	switch v.value.(type) {
@@ -305,6 +331,17 @@ func (v *Any) IsBool() bool {
 		return true
 	default:
 		return false
+	}
+}
+
+// IsMap checks whether <v> is type of map.
+func (v *Any) IsMap() bool {
+	switch v.value.(type) {
+	case map[string]interface{}, maps.Map:
+		return true
+	default:
+		typeof := reflect.TypeOf(v.value)
+		return typeof.Kind() == reflect.Map
 	}
 }
 

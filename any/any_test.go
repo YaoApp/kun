@@ -273,11 +273,41 @@ func TestCBool(t *testing.T) {
 	})
 }
 
+func TestMap(t *testing.T) {
+	map1 := Of(map[string]interface{}{
+		"hello": "world",
+		"foo":   1,
+		"name": map[string]interface{}{
+			"first":  "Join",
+			"second": "Cool",
+		}}).Map()
+	assert.Equal(t, "world", map1.Get("hello"))
+	assert.Equal(t, "Join", map1.Dot().Get("name.first"))
+
+	map1.Set("title", "CEO")
+	map2 := Of(map1).Map()
+	assert.Equal(t, "CEO", map2.Get("title"))
+
+	map3 := Of(map[int]string{0: "0", 1: "1"}).Map()
+	assert.Equal(t, "0", map3.Get("0"))
+	assert.Equal(t, "1", map3.Get("1"))
+
+	assert.Panics(t, func() {
+		Of([]string{"hello", "world"}).Map()
+	})
+}
+
 func TestIsBool(t *testing.T) {
 	assert.Equal(t, true, Of(true).IsBool())
 	assert.Equal(t, true, Of(false).IsBool())
 	assert.Equal(t, false, Of(0).IsBool())
 	assert.Equal(t, false, Of(1).IsBool())
+}
+
+func TestIsMap(t *testing.T) {
+	assert.Equal(t, true, Of(map[string]interface{}{"hello": "world"}).IsMap())
+	assert.Equal(t, true, Of(map[int]string{0: "0", 1: "1"}).IsMap())
+	assert.Equal(t, false, Of([]string{"hello", "world"}).IsMap())
 }
 
 func TestIsInt(t *testing.T) {
