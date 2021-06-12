@@ -4,7 +4,7 @@ PACKAGES ?= $(shell $(GO) list ./...)
 VETPACKAGES ?= $(shell $(GO) list ./... | grep -v /examples/)
 GOFILES := $(shell find . -name "*.go")
 
-TESTFOLDER := $(shell $(GO) list ./... | grep -E './maps$$|./utils$$|./any$$' | grep -v examples)
+TESTFOLDER := $(shell $(GO) list ./... | grep -E './maps$$|./utils$$|./any$$|./num$$' | grep -v examples)
 TESTTAGS ?= ""
 
 .PHONY: test
