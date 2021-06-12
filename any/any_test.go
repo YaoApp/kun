@@ -273,6 +273,17 @@ func TestCBool(t *testing.T) {
 	})
 }
 
+func TestNumber(t *testing.T) {
+	num1 := Of(0.618).Number()
+	assert.Equal(t, 0.618, num1.Float())
+
+	num2 := Of(1.618 + 0.532i).Number()
+	assert.Equal(t, 1.618+0.532i, num2.Complex())
+
+	num3 := Of(1.618).Number()
+	assert.Equal(t, 2, num3.Int())
+}
+
 func TestMap(t *testing.T) {
 	map1 := Of(map[string]interface{}{
 		"hello": "world",
@@ -297,17 +308,24 @@ func TestMap(t *testing.T) {
 	})
 }
 
-func TestIsBool(t *testing.T) {
-	assert.Equal(t, true, Of(true).IsBool())
-	assert.Equal(t, true, Of(false).IsBool())
-	assert.Equal(t, false, Of(0).IsBool())
-	assert.Equal(t, false, Of(1).IsBool())
+func TestIsNumber(t *testing.T) {
+	assert.Equal(t, true, Of(1).IsNumber())
+	assert.Equal(t, true, Of(0.618).IsNumber())
+	assert.Equal(t, true, Of(1+0.618i).IsNumber())
+	assert.Equal(t, false, Of([]string{"hello", "world"}).IsNumber())
 }
 
 func TestIsMap(t *testing.T) {
 	assert.Equal(t, true, Of(map[string]interface{}{"hello": "world"}).IsMap())
 	assert.Equal(t, true, Of(map[int]string{0: "0", 1: "1"}).IsMap())
 	assert.Equal(t, false, Of([]string{"hello", "world"}).IsMap())
+}
+
+func TestIsBool(t *testing.T) {
+	assert.Equal(t, true, Of(true).IsBool())
+	assert.Equal(t, true, Of(false).IsBool())
+	assert.Equal(t, false, Of(0).IsBool())
+	assert.Equal(t, false, Of(1).IsBool())
 }
 
 func TestIsInt(t *testing.T) {

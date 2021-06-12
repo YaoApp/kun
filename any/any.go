@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/yaoapp/kun/maps"
+	"github.com/yaoapp/kun/num"
 )
 
 // Any the replacement for interface{}
@@ -144,7 +145,7 @@ func (v *Any) CInt() int {
 	if ok {
 		return value
 	}
-	value, err := strconv.Atoi(fmt.Sprintf("%v", v.value))
+	value, err := strconv.Atoi(fmt.Sprintf("%.0f", v.CFloat64()))
 	if err != nil {
 		panic(err.Error())
 	}
@@ -300,6 +301,19 @@ func (v *Any) CBool() bool {
 	return value
 }
 
+// Number converts and returns <v> as num.Number
+func (v *Any) Number() *num.Number {
+	switch v.value.(type) {
+	case *num.Number:
+		return v.value.(*num.Number)
+	case num.Number:
+		value := v.value.(num.Number)
+		return &value
+	default:
+		return num.Of(v.value)
+	}
+}
+
 // Map converts and returns <v> as maps.Map
 func (v *Any) Map() maps.Map {
 	switch v.value.(type) {
@@ -321,13 +335,13 @@ func (v *Any) Map() maps.Map {
 		return maps.Of(valuesMap)
 	}
 
-	panic("v is not a type not a map")
+	panic("v is not a type of map")
 }
 
-// IsBool checks whether <v> is type of bool.
-func (v *Any) IsBool() bool {
+// IsNumber checks whether <v> is type of number.
+func (v *Any) IsNumber() bool {
 	switch v.value.(type) {
-	case bool:
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, complex64, complex128:
 		return true
 	default:
 		return false
@@ -342,6 +356,16 @@ func (v *Any) IsMap() bool {
 	default:
 		typeof := reflect.TypeOf(v.value)
 		return typeof.Kind() == reflect.Map
+	}
+}
+
+// IsBool checks whether <v> is type of bool.
+func (v *Any) IsBool() bool {
+	switch v.value.(type) {
+	case bool:
+		return true
+	default:
+		return false
 	}
 }
 
