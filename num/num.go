@@ -91,7 +91,7 @@ func (n Number) Complex64() complex64 {
 }
 
 // Int64 the return value is the type of int64 and remove the decimal
-func (n Number) Int64() int64 {
+func (n *Number) Int64() int64 {
 	value, ok := n.value.(int64)
 	if ok {
 		return value
@@ -137,41 +137,82 @@ func (n *Number) Int() int {
 		return value
 	}
 
-	value, err := strconv.Atoi(fmt.Sprintf("%.0f", n.Float64()))
-	if err != nil {
-		panic(err.Error())
-	}
+	value, _ = strconv.Atoi(fmt.Sprintf("%.0f", n.Float64()))
 	return value
 }
 
 // Uint64 the return value is the type of uint64 and remove the decimal
-func (n Number) Uint64() uint64 {
-	return 0
+func (n *Number) Uint64() uint64 {
+	value, ok := n.value.(uint64)
+	if ok {
+		return value
+	}
+	return uint64(n.Int())
 }
 
 // Uint32 the return value is the type of uint32 and remove the decimal
-func (n Number) Uint32() uint32 {
-	return 0
+func (n *Number) Uint32() uint32 {
+	value, ok := n.value.(uint32)
+	if ok {
+		return value
+	}
+	return uint32(n.Int())
 }
 
 // Uint16 the return value is the type of uint16 and remove the decimal
-func (n Number) Uint16() uint16 {
-	return 0
+func (n *Number) Uint16() uint16 {
+	value, ok := n.value.(uint16)
+	if ok {
+		return value
+	}
+	return uint16(n.Int())
 }
 
 // Uint8 the return value is the type of uint8 and remove the decimal
-func (n Number) Uint8() uint8 {
-	return 0
+func (n *Number) Uint8() uint8 {
+	value, ok := n.value.(uint8)
+	if ok {
+		return value
+	}
+	return uint8(n.Int())
 }
 
 // Uint the return value is the type of uint and remove the decimal
-func (n Number) Uint() uint {
-	return 0
+func (n *Number) Uint() uint {
+	value, ok := n.value.(uint)
+	if ok {
+		return value
+	}
+	return uint(n.Int())
 }
 
 // Uintptr the return value is the type of uintptr
-func (n Number) Uintptr() uintptr {
-	return 0
+func (n *Number) Uintptr() uintptr {
+	value, ok := n.value.(uintptr)
+	if ok {
+		return value
+	}
+	return uintptr(n.Int())
+}
+
+// IsSet checks whether <v> is not nil.
+func (n *Number) IsSet() bool {
+	return n.value != nil
+}
+
+// IsNil checks whether <v> is nil.
+func (n *Number) IsNil() bool {
+	return n.value == nil
+}
+
+// IsInt checks whether <v> is type of int.
+func (n *Number) IsInt() bool {
+	switch n.value.(type) {
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+		return true
+	default:
+		return false
+	}
 }
 
 // IsFloat checks whether <v> is type of float.
