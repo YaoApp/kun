@@ -104,7 +104,7 @@ func TestCInt(t *testing.T) {
 	assert.Equal(t, 10, v.CInt())
 
 	v.Set(nil)
-	assert.Equal(t, 0, v.Int())
+	assert.Equal(t, 0, v.CInt())
 
 	v.Set("20")
 	assert.Equal(t, 20, v.CInt())
