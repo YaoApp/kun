@@ -77,7 +77,7 @@ func TestCStrings(t *testing.T) {
 	assert.Equal(t, []string{"hello", "1", "true"}, v.CStrings())
 
 	v.Set(nil)
-	assert.Equal(t, []string{}, v.Strings())
+	assert.Equal(t, []string{}, v.CStrings())
 
 	v.Set([]string{"hello", "world"})
 	assert.Equal(t, []string{"hello", "world"}, v.CStrings())
