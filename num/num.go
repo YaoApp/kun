@@ -60,7 +60,7 @@ func (n *Number) Float64() float64 {
 	return value
 }
 
-// Float32  converts and returns as float32
+// Float32 converts and returns as float32
 func (n *Number) Float32() float32 {
 	if n.value == nil {
 		return 0.0
@@ -92,27 +92,56 @@ func (n Number) Complex64() complex64 {
 
 // Int64 the return value is the type of int64 and remove the decimal
 func (n Number) Int64() int64 {
-	return 0
+	value, ok := n.value.(int64)
+	if ok {
+		return value
+	}
+	return int64(n.Int())
 }
 
 // Int32 the return value is the type of int32 and remove the decimal
-func (n Number) Int32() int32 {
-	return 0
+func (n *Number) Int32() int32 {
+	value, ok := n.value.(int32)
+	if ok {
+		return value
+	}
+	return int32(n.Int())
 }
 
 // Int16 the return value is the type of int16 and remove the decimal
-func (n Number) Int16() int16 {
-	return 0
+func (n *Number) Int16() int16 {
+	value, ok := n.value.(int16)
+	if ok {
+		return value
+	}
+	return int16(n.Int())
 }
 
-// Int8 the return value is the type of int8 and remove the decimal
-func (n Number) Int8() int8 {
-	return 0
+// Int8 converts and returns as Int8
+func (n *Number) Int8() int8 {
+	value, ok := n.value.(int8)
+	if ok {
+		return value
+	}
+	return int8(n.Int())
 }
 
-// Int the return value is the type of int and remove the decimal
-func (n Number) Int() int {
-	return 0
+// Int converts and returns as Int
+func (n *Number) Int() int {
+	if n.value == nil {
+		return 0
+	}
+
+	value, ok := n.value.(int)
+	if ok {
+		return value
+	}
+
+	value, err := strconv.Atoi(fmt.Sprintf("%.0f", n.Float64()))
+	if err != nil {
+		panic(err.Error())
+	}
+	return value
 }
 
 // Uint64 the return value is the type of uint64 and remove the decimal
@@ -143,6 +172,16 @@ func (n Number) Uint() uint {
 // Uintptr the return value is the type of uintptr
 func (n Number) Uintptr() uintptr {
 	return 0
+}
+
+// IsFloat checks whether <v> is type of float.
+func (n *Number) IsFloat() bool {
+	switch n.value.(type) {
+	case float32, float64:
+		return true
+	default:
+		return false
+	}
 }
 
 // Scan for db scan
