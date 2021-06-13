@@ -31,18 +31,18 @@ func (n *Number) Set(value interface{}) (old interface{}) {
 }
 
 // ToFixed the return value is the type of float64 and keeps the given decimal places
-func (n *Number) ToFixed(places int) string {
+func (n Number) ToFixed(places int) string {
 	format := fmt.Sprintf("%%.%df", places)
 	return fmt.Sprintf(format, n.Float64())
 }
 
 // Float is alias of Float64 converts and returns as float64
-func (n *Number) Float() float64 {
+func (n Number) Float() float64 {
 	return n.Float64()
 }
 
 // Float64 converts and returns as float64
-func (n *Number) Float64() float64 {
+func (n Number) Float64() float64 {
 	if n.value == nil {
 		return 0.0
 	}
@@ -66,7 +66,7 @@ func (n *Number) Float64() float64 {
 }
 
 // Float32 converts and returns as float32
-func (n *Number) Float32() float32 {
+func (n Number) Float32() float32 {
 	if n.value == nil {
 		return 0.0
 	}
@@ -86,12 +86,12 @@ func (n *Number) Float32() float32 {
 }
 
 // Complex is alias of Complex128 converts and returns as complex128
-func (n *Number) Complex() complex128 {
+func (n Number) Complex() complex128 {
 	return n.Complex128()
 }
 
 // Complex128 converts and returns as complex128
-func (n *Number) Complex128() complex128 {
+func (n Number) Complex128() complex128 {
 	value, ok := n.value.(complex128)
 	if ok {
 		return value
@@ -122,7 +122,7 @@ func (n *Number) Complex128() complex128 {
 }
 
 // Complex64 converts and returns as Complex64
-func (n *Number) Complex64() complex64 {
+func (n Number) Complex64() complex64 {
 	value, ok := n.value.(complex64)
 	if ok {
 		return value
@@ -153,7 +153,7 @@ func (n *Number) Complex64() complex64 {
 }
 
 // Int64 the return value is the type of int64 and remove the decimal
-func (n *Number) Int64() int64 {
+func (n Number) Int64() int64 {
 	value, ok := n.value.(int64)
 	if ok {
 		return value
@@ -162,7 +162,7 @@ func (n *Number) Int64() int64 {
 }
 
 // Int32 the return value is the type of int32 and remove the decimal
-func (n *Number) Int32() int32 {
+func (n Number) Int32() int32 {
 	value, ok := n.value.(int32)
 	if ok {
 		return value
@@ -171,7 +171,7 @@ func (n *Number) Int32() int32 {
 }
 
 // Int16 the return value is the type of int16 and remove the decimal
-func (n *Number) Int16() int16 {
+func (n Number) Int16() int16 {
 	value, ok := n.value.(int16)
 	if ok {
 		return value
@@ -180,7 +180,7 @@ func (n *Number) Int16() int16 {
 }
 
 // Int8 converts and returns as Int8
-func (n *Number) Int8() int8 {
+func (n Number) Int8() int8 {
 	value, ok := n.value.(int8)
 	if ok {
 		return value
@@ -189,7 +189,7 @@ func (n *Number) Int8() int8 {
 }
 
 // Int converts and returns as Int
-func (n *Number) Int() int {
+func (n Number) Int() int {
 	if n.value == nil {
 		return 0
 	}
@@ -204,7 +204,7 @@ func (n *Number) Int() int {
 }
 
 // Uint64 the return value is the type of uint64 and remove the decimal
-func (n *Number) Uint64() uint64 {
+func (n Number) Uint64() uint64 {
 	value, ok := n.value.(uint64)
 	if ok {
 		return value
@@ -213,7 +213,7 @@ func (n *Number) Uint64() uint64 {
 }
 
 // Uint32 the return value is the type of uint32 and remove the decimal
-func (n *Number) Uint32() uint32 {
+func (n Number) Uint32() uint32 {
 	value, ok := n.value.(uint32)
 	if ok {
 		return value
@@ -222,7 +222,7 @@ func (n *Number) Uint32() uint32 {
 }
 
 // Uint16 the return value is the type of uint16 and remove the decimal
-func (n *Number) Uint16() uint16 {
+func (n Number) Uint16() uint16 {
 	value, ok := n.value.(uint16)
 	if ok {
 		return value
@@ -231,7 +231,7 @@ func (n *Number) Uint16() uint16 {
 }
 
 // Uint8 the return value is the type of uint8 and remove the decimal
-func (n *Number) Uint8() uint8 {
+func (n Number) Uint8() uint8 {
 	value, ok := n.value.(uint8)
 	if ok {
 		return value
@@ -240,7 +240,7 @@ func (n *Number) Uint8() uint8 {
 }
 
 // Uint the return value is the type of uint and remove the decimal
-func (n *Number) Uint() uint {
+func (n Number) Uint() uint {
 	value, ok := n.value.(uint)
 	if ok {
 		return value
@@ -249,7 +249,7 @@ func (n *Number) Uint() uint {
 }
 
 // Uintptr the return value is the type of uintptr
-func (n *Number) Uintptr() uintptr {
+func (n Number) Uintptr() uintptr {
 	value, ok := n.value.(uintptr)
 	if ok {
 		return value
@@ -258,17 +258,17 @@ func (n *Number) Uintptr() uintptr {
 }
 
 // IsSet checks whether <v> is not nil.
-func (n *Number) IsSet() bool {
+func (n Number) IsSet() bool {
 	return n.value != nil
 }
 
 // IsNil checks whether <v> is nil.
-func (n *Number) IsNil() bool {
+func (n Number) IsNil() bool {
 	return n.value == nil
 }
 
 // IsInt checks whether <v> is type of int.
-func (n *Number) IsInt() bool {
+func (n Number) IsInt() bool {
 	switch n.value.(type) {
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
 		return true
@@ -278,7 +278,7 @@ func (n *Number) IsInt() bool {
 }
 
 // IsFloat checks whether <v> is type of float.
-func (n *Number) IsFloat() bool {
+func (n Number) IsFloat() bool {
 	switch n.value.(type) {
 	case float32, float64:
 		return true
@@ -288,7 +288,7 @@ func (n *Number) IsFloat() bool {
 }
 
 // IsComplex checks whether <v> is type of complex.
-func (n *Number) IsComplex() bool {
+func (n Number) IsComplex() bool {
 	switch n.value.(type) {
 	case complex128, complex64:
 		return true
