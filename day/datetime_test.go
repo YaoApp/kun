@@ -85,6 +85,8 @@ func TestTimezone(t *testing.T) {
 	TimezoneUTC()
 	assert.Panics(t, func() {
 		Timezone("America/Heibei")
+	})
+	assert.Panics(t, func() {
 		Of("2019-12-31").Timezone("America/Heibei").Day()
 	})
 }
