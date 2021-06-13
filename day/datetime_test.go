@@ -1,17 +1,19 @@
 package day
 
 import (
+	"fmt"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNow(t *testing.T) {
-	ResetTz()
+	TimezoneUTC()
 	v := Now()
 	name, offset := v.Zone()
-	assert.Equal(t, "CST", name)
-	assert.Equal(t, 8*60*60, offset)
+	assert.Equal(t, "UTC", name)
+	assert.Equal(t, 0, offset)
 
 	name, offset = v.Timezone("America/New_York").Zone()
 	assert.Equal(t, "EDT", name)
@@ -29,7 +31,12 @@ func TestNow(t *testing.T) {
 }
 
 func TestOf(t *testing.T) {
-	ResetTz()
+
+	TimezoneUTC()
+	assert.Equal(t, 31, Of(Of("2019-12-31")).Day())
+	assert.Equal(t, 31, Of(*Of("2019-12-31")).Day())
+	assert.Equal(t, 31, Of(time.Date(2019, 12, 31, 0, 0, 0, 0, time.UTC)).Day())
+
 	assert.Equal(t, 31, Of("2019-12-31").Day())
 	assert.Equal(t, 30, Of("2019-12-31").Timezone("America/New_York").Day())
 	assert.Equal(t, 31, Of("2019-12-31 08:31:56").Day())
@@ -39,10 +46,14 @@ func TestOf(t *testing.T) {
 	assert.Equal(t, 30, Of("2019-12-31").Day())
 	assert.Equal(t, 31, Of("2019-12-31 08:31:56").Day())
 	assert.Equal(t, 56, Of("2019-12-31 08:31:56").Second())
+
+	assert.Panics(t, func() {
+		fmt.Println(Of("error").Day())
+	})
 }
 
 func TestLoad(t *testing.T) {
-	ResetTz()
+	TimezoneUTC()
 	v := Now()
 	assert.Equal(t, 31, v.Load("2019-12-31").Day())
 	assert.Equal(t, 30, v.Load("2019-12-31").Timezone("America/New_York").Day())

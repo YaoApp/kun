@@ -42,6 +42,17 @@ func Make() *Datetime {
 
 // Of make a new datetime with the given value
 func Of(value interface{}, formats ...string) *Datetime {
+
+	switch value.(type) {
+	case time.Time:
+		return &Datetime{Time: value.(time.Time)}
+	case *Datetime:
+		return value.(*Datetime)
+	case Datetime:
+		d := value.(Datetime)
+		return &d
+	}
+
 	if len(formats) == 0 {
 		formats = defaultFormats
 	}
@@ -81,9 +92,14 @@ func (d *Datetime) Timezone(name string, offset ...int) *Datetime {
 	return d
 }
 
-// ResetTz reset the default location
-func ResetTz() {
+// TimezoneSystem using the system default zone
+func TimezoneSystem() {
 	defaultLocation = nil
+}
+
+// TimezoneUTC using the UTC zone
+func TimezoneUTC() {
+	defaultLocation = time.UTC
 }
 
 // Timezone set the default location
