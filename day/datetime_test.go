@@ -31,7 +31,7 @@ func TestNow(t *testing.T) {
 }
 
 func TestOf(t *testing.T) {
-	assert.Equal(t, 31, Of("2019-12-31").Day())
+	assert.Equal(t, 31, Of("2019-12-31 08:31:56").Day())
 
 	Timezone("UTC", 0)
 	assert.Equal(t, 31, Of(Of("2019-12-31")).Day())
@@ -55,7 +55,7 @@ func TestOf(t *testing.T) {
 
 func TestLoad(t *testing.T) {
 	v := Now()
-	assert.Equal(t, 31, v.Load("2019-12-31").Day())
+	assert.Equal(t, 31, v.Load("2019-12-31 08:31:56").Day())
 
 	TimezoneUTC()
 	v = Now()
