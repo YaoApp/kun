@@ -85,11 +85,12 @@ func TestTimezone(t *testing.T) {
 	TimezoneUTC()
 	assert.Panics(t, func() {
 		Timezone("America/Heibei")
+		Of("2019-12-31").Timezone("America/Heibei").Day()
 	})
-
 }
 
 func TestGetTimezone(t *testing.T) {
+	TimezoneSystem()
 	name, offset := GetTimezone()
 	assert.True(t, 0 <= offset)
 	assert.True(t, "" != name)
