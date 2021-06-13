@@ -92,6 +92,14 @@ func (d *Datetime) Timezone(name string, offset ...int) *Datetime {
 	return d
 }
 
+// GetTimezone get the timezone of current
+func GetTimezone() (name string, offset int) {
+	if defaultLocation == nil {
+		return time.Now().Zone()
+	}
+	return time.Now().In(defaultLocation).Zone()
+}
+
 // TimezoneSystem using the system default zone
 func TimezoneSystem() {
 	defaultLocation = nil

@@ -31,8 +31,9 @@ func TestNow(t *testing.T) {
 }
 
 func TestOf(t *testing.T) {
+	assert.Equal(t, 31, Of("2019-12-31").Day())
 
-	TimezoneUTC()
+	Timezone("UTC", 0)
 	assert.Equal(t, 31, Of(Of("2019-12-31")).Day())
 	assert.Equal(t, 31, Of(*Of("2019-12-31")).Day())
 	assert.Equal(t, 31, Of(time.Date(2019, 12, 31, 0, 0, 0, 0, time.UTC)).Day())
@@ -53,14 +54,18 @@ func TestOf(t *testing.T) {
 }
 
 func TestLoad(t *testing.T) {
-	TimezoneUTC()
 	v := Now()
+	assert.Equal(t, 31, v.Load("2019-12-31").Day())
+
+	TimezoneUTC()
+	v = Now()
 	assert.Equal(t, 31, v.Load("2019-12-31").Day())
 	assert.Equal(t, 30, v.Load("2019-12-31").Timezone("America/New_York").Day())
 	assert.Equal(t, 31, v.Load("2019-12-31 08:31:56").Day())
 	assert.Equal(t, 56, v.Load("2019-12-31 08:31:56").Second())
 
 	Timezone("America/New_York")
+	v = Now()
 	assert.Equal(t, 30, v.Load("2019-12-31").Day())
 	assert.Equal(t, 31, v.Load("2019-12-31 08:31:56").Day())
 	assert.Equal(t, 56, v.Load("2019-12-31 08:31:56").Second())
@@ -69,4 +74,37 @@ func TestLoad(t *testing.T) {
 func TestTimezones(t *testing.T) {
 	zones := TimeZones()
 	assert.True(t, len(zones) > 0)
+}
+
+func TestTimezone(t *testing.T) {
+	Timezone("America/New_York")
+	Timezone("Beijing", 8*60*60)
+	TimezoneSystem()
+	TimezoneUTC()
+	assert.Panics(t, func() {
+		Timezone("America/Heibei")
+	})
+
+}
+
+func TestGetTimezone(t *testing.T) {
+	name, offset := GetTimezone()
+	assert.True(t, 0 <= offset)
+	assert.True(t, "" != name)
+
+	TimezoneUTC()
+	name, offset = GetTimezone()
+	assert.Equal(t, 0, offset)
+	assert.Equal(t, "UTC", name)
+
+	Timezone("America/New_York")
+	name, offset = GetTimezone()
+	assert.Equal(t, -4*60*60, offset)
+	assert.Equal(t, "EDT", name)
+
+	Timezone("Beijing", 8*60*60)
+	name, offset = GetTimezone()
+	assert.Equal(t, 8*60*60, offset)
+	assert.Equal(t, "Beijing", name)
+
 }
