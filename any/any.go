@@ -37,22 +37,22 @@ func (v *Any) Set(value interface{}) (old interface{}) {
 }
 
 // Get returns the current value of <v>.
-func (v *Any) Get() interface{} {
+func (v Any) Get() interface{} {
 	return v.value
 }
 
 // Val is alias of Get.
-func (v *Any) Val() interface{} {
+func (v Any) Val() interface{} {
 	return v.Get()
 }
 
 // Interface is alias of Get.
-func (v *Any) Interface() interface{} {
+func (v Any) Interface() interface{} {
 	return v.Get()
 }
 
 // Interfaces converts and returns <v> as []interfaces{}.
-func (v *Any) Interfaces() []interface{} {
+func (v Any) Interfaces() []interface{} {
 	if v.value == nil {
 		return []interface{}{}
 	}
@@ -71,7 +71,7 @@ func (v *Any) Interfaces() []interface{} {
 }
 
 // String returns <v> as string.
-func (v *Any) String() string {
+func (v Any) String() string {
 	if v.value == nil {
 		return ""
 	}
@@ -83,7 +83,7 @@ func (v *Any) String() string {
 }
 
 // CString converts and returns <v> as string.
-func (v *Any) CString() string {
+func (v Any) CString() string {
 	value, ok := v.value.(string)
 	if ok {
 		return value
@@ -92,7 +92,7 @@ func (v *Any) CString() string {
 }
 
 // Strings returns <v> as []string.
-func (v *Any) Strings() []string {
+func (v Any) Strings() []string {
 	if v.value == nil {
 		return []string{}
 	}
@@ -104,7 +104,7 @@ func (v *Any) Strings() []string {
 }
 
 // CStrings converts and returns <v> as []string.
-func (v *Any) CStrings() []string {
+func (v Any) CStrings() []string {
 	if v.value == nil {
 		return []string{}
 	}
@@ -124,7 +124,7 @@ func (v *Any) CStrings() []string {
 }
 
 // Int returns <v> as int
-func (v *Any) Int() int {
+func (v Any) Int() int {
 	if v.value == nil {
 		return 0
 	}
@@ -137,7 +137,7 @@ func (v *Any) Int() int {
 }
 
 // CInt converts and returns <v> as int
-func (v *Any) CInt() int {
+func (v Any) CInt() int {
 
 	if v.value == nil {
 		return 0
@@ -155,7 +155,7 @@ func (v *Any) CInt() int {
 }
 
 // Ints returns <v> as []int
-func (v *Any) Ints() []int {
+func (v Any) Ints() []int {
 	if v.value == nil {
 		return []int{}
 	}
@@ -167,7 +167,7 @@ func (v *Any) Ints() []int {
 }
 
 // CInts converts and returns <v> as []int
-func (v *Any) CInts() []int {
+func (v Any) CInts() []int {
 
 	if v.value == nil {
 		return []int{}
@@ -188,12 +188,12 @@ func (v *Any) CInts() []int {
 }
 
 // Float is alias of Float64 returns <v> as float64
-func (v *Any) Float() float64 {
+func (v Any) Float() float64 {
 	return v.Float64()
 }
 
 // Float64 returns <v> as float64
-func (v *Any) Float64() float64 {
+func (v Any) Float64() float64 {
 	if v.value == nil {
 		return 0
 	}
@@ -206,12 +206,12 @@ func (v *Any) Float64() float64 {
 }
 
 // CFloat is alias of CFloat64 converts and returns <v> as float64
-func (v *Any) CFloat() float64 {
+func (v Any) CFloat() float64 {
 	return v.CFloat64()
 }
 
 // CFloat64 converts and returns <v> as float64
-func (v *Any) CFloat64() float64 {
+func (v Any) CFloat64() float64 {
 
 	if v.value == nil {
 		return 0
@@ -229,12 +229,12 @@ func (v *Any) CFloat64() float64 {
 }
 
 // Floats is alias of Float64s returns <v> as []float64
-func (v *Any) Floats() []float64 {
+func (v Any) Floats() []float64 {
 	return v.Float64s()
 }
 
 // Float64s returns <v> as []float64
-func (v *Any) Float64s() []float64 {
+func (v Any) Float64s() []float64 {
 	if v.value == nil {
 		return []float64{}
 	}
@@ -246,12 +246,12 @@ func (v *Any) Float64s() []float64 {
 }
 
 // CFloats is alias of CFloat64s converts and returns <v> as []float64
-func (v *Any) CFloats() []float64 {
+func (v Any) CFloats() []float64 {
 	return v.CFloat64s()
 }
 
 // CFloat64s converts and returns <v> as []float64
-func (v *Any) CFloat64s() []float64 {
+func (v Any) CFloat64s() []float64 {
 
 	if v.value == nil {
 		return []float64{}
@@ -272,7 +272,7 @@ func (v *Any) CFloat64s() []float64 {
 }
 
 // Bool returns <v> as bool
-func (v *Any) Bool() bool {
+func (v Any) Bool() bool {
 	if v.value == nil {
 		return false
 	}
@@ -285,7 +285,7 @@ func (v *Any) Bool() bool {
 }
 
 // CBool converts and returns <v> as bool
-func (v *Any) CBool() bool {
+func (v Any) CBool() bool {
 
 	if v.value == nil {
 		return false
@@ -304,7 +304,7 @@ func (v *Any) CBool() bool {
 }
 
 // Number converts and returns <v> as num.Number
-func (v *Any) Number() *num.Number {
+func (v Any) Number() *num.Number {
 	switch v.value.(type) {
 	case *num.Number:
 		return v.value.(*num.Number)
@@ -317,7 +317,7 @@ func (v *Any) Number() *num.Number {
 }
 
 // Datetime converts and returns <v> as day.Datetime
-func (v *Any) Datetime() *day.Datetime {
+func (v Any) Datetime() *day.Datetime {
 	switch v.value.(type) {
 	case *day.Datetime:
 		return v.value.(*day.Datetime)
@@ -330,7 +330,7 @@ func (v *Any) Datetime() *day.Datetime {
 }
 
 // Map converts and returns <v> as maps.Map
-func (v *Any) Map() maps.Map {
+func (v Any) Map() maps.Map {
 	switch v.value.(type) {
 	case maps.Map:
 		return v.value.(maps.Map)
@@ -354,7 +354,7 @@ func (v *Any) Map() maps.Map {
 }
 
 // IsDatetime checks whether <v> is type of datetime.
-func (v *Any) IsDatetime() bool {
+func (v Any) IsDatetime() bool {
 	switch v.value.(type) {
 	case time.Time, *time.Time, day.Datetime, *day.Datetime:
 		return true
@@ -364,7 +364,7 @@ func (v *Any) IsDatetime() bool {
 }
 
 // IsNumber checks whether <v> is type of number.
-func (v *Any) IsNumber() bool {
+func (v Any) IsNumber() bool {
 	switch v.value.(type) {
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, complex64, complex128:
 		return true
@@ -374,7 +374,7 @@ func (v *Any) IsNumber() bool {
 }
 
 // IsMap checks whether <v> is type of map.
-func (v *Any) IsMap() bool {
+func (v Any) IsMap() bool {
 	switch v.value.(type) {
 	case map[string]interface{}, maps.Map:
 		return true
@@ -385,7 +385,7 @@ func (v *Any) IsMap() bool {
 }
 
 // IsBool checks whether <v> is type of bool.
-func (v *Any) IsBool() bool {
+func (v Any) IsBool() bool {
 	switch v.value.(type) {
 	case bool:
 		return true
@@ -395,7 +395,7 @@ func (v *Any) IsBool() bool {
 }
 
 // IsInt checks whether <v> is type of int.
-func (v *Any) IsInt() bool {
+func (v Any) IsInt() bool {
 	switch v.value.(type) {
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
 		return true
@@ -405,7 +405,7 @@ func (v *Any) IsInt() bool {
 }
 
 // IsFloat checks whether <v> is type of float.
-func (v *Any) IsFloat() bool {
+func (v Any) IsFloat() bool {
 	switch v.value.(type) {
 	case float32, float64:
 		return true
@@ -415,21 +415,21 @@ func (v *Any) IsFloat() bool {
 }
 
 // IsSlice checks whether <v> is type of slice.
-func (v *Any) IsSlice() bool {
+func (v Any) IsSlice() bool {
 	values := reflect.ValueOf(v.value)
 	values = reflect.Indirect(values)
 	return values.Kind() == reflect.Slice
 }
 
 // IsArray checks whether <v> is type of array.
-func (v *Any) IsArray() bool {
+func (v Any) IsArray() bool {
 	values := reflect.ValueOf(v.value)
 	values = reflect.Indirect(values)
 	return values.Kind() == reflect.Array
 }
 
 // IsCollection checks whether <v> is type of array or slice.
-func (v *Any) IsCollection() bool {
+func (v Any) IsCollection() bool {
 	values := reflect.ValueOf(v.value)
 	values = reflect.Indirect(values)
 	kind := values.Kind()
@@ -437,17 +437,17 @@ func (v *Any) IsCollection() bool {
 }
 
 // IsSet checks whether <v> is not nil.
-func (v *Any) IsSet() bool {
+func (v Any) IsSet() bool {
 	return v.value != nil
 }
 
 // IsNil checks whether <v> is nil.
-func (v *Any) IsNil() bool {
+func (v Any) IsNil() bool {
 	return v.value == nil
 }
 
 // IsEmpty checks whether <v> is empty.
-func (v *Any) IsEmpty() bool {
+func (v Any) IsEmpty() bool {
 	if v.value == nil {
 		return true
 	}
