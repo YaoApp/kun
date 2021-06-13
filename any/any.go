@@ -7,7 +7,9 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/yaoapp/kun/day"
 	"github.com/yaoapp/kun/maps"
 	"github.com/yaoapp/kun/num"
 )
@@ -314,6 +316,19 @@ func (v *Any) Number() *num.Number {
 	}
 }
 
+// Datetime converts and returns <v> as day.Datetime
+func (v *Any) Datetime() *day.Datetime {
+	switch v.value.(type) {
+	case *day.Datetime:
+		return v.value.(*day.Datetime)
+	case day.Datetime:
+		value := v.value.(day.Datetime)
+		return &value
+	default:
+		return day.Of(v.value)
+	}
+}
+
 // Map converts and returns <v> as maps.Map
 func (v *Any) Map() maps.Map {
 	switch v.value.(type) {
@@ -336,6 +351,16 @@ func (v *Any) Map() maps.Map {
 	}
 
 	panic("v is not a type of map")
+}
+
+// IsDatetime checks whether <v> is type of datetime.
+func (v *Any) IsDatetime() bool {
+	switch v.value.(type) {
+	case time.Time, *time.Time, day.Datetime, *day.Datetime:
+		return true
+	default:
+		return false
+	}
 }
 
 // IsNumber checks whether <v> is type of number.

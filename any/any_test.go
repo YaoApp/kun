@@ -3,8 +3,10 @@ package any
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/yaoapp/kun/day"
 	"github.com/yaoapp/kun/num"
 )
 
@@ -288,6 +290,15 @@ func TestNumber(t *testing.T) {
 	assert.Equal(t, 1, num4.Int())
 }
 
+func TestDatetime(t *testing.T) {
+	day.Timezone("Beijing", 8*60*60)
+	assert.Equal(t, 31, Of("2019-12-31 08:20:55").Datetime().Day())
+
+	name, offset := Of("2019-12-31 08:20:55").Datetime().Zone()
+	assert.Equal(t, "Beijing", name)
+	assert.Equal(t, 8*60*60, offset)
+}
+
 func TestMap(t *testing.T) {
 	map1 := Of(map[string]interface{}{
 		"hello": "world",
@@ -310,6 +321,12 @@ func TestMap(t *testing.T) {
 	assert.Panics(t, func() {
 		Of([]string{"hello", "world"}).Map()
 	})
+}
+
+func TestIsDatetime(t *testing.T) {
+	assert.Equal(t, true, Of(day.Of("2000-01-01")).IsDatetime())
+	assert.Equal(t, true, Of(time.Now()).IsDatetime())
+	assert.Equal(t, false, Of(1).IsDatetime())
 }
 
 func TestIsNumber(t *testing.T) {
