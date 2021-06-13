@@ -293,6 +293,8 @@ func TestNumber(t *testing.T) {
 func TestDatetime(t *testing.T) {
 	day.Timezone("Beijing", 8*60*60)
 	assert.Equal(t, 31, Of("2019-12-31 08:20:55").Datetime().Day())
+	assert.Equal(t, 31, Of(day.Of("2019-12-31 08:20:55")).Datetime().Day())
+	assert.Equal(t, 31, Of(*day.Of("2019-12-31 08:20:55")).Datetime().Day())
 
 	name, offset := Of("2019-12-31 08:20:55").Datetime().Zone()
 	assert.Equal(t, "Beijing", name)
