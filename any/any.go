@@ -330,12 +330,14 @@ func (v Any) Datetime() *day.Datetime {
 }
 
 // Map converts and returns <v> as maps.Map
-func (v Any) Map() maps.Map {
+func (v Any) Map() Map {
 	switch v.value.(type) {
+	case Map:
+		return v.value.(Map)
 	case maps.Map:
-		return v.value.(maps.Map)
+		return Map{MapStrAny: v.value.(maps.Map)}
 	case map[string]interface{}:
-		return maps.Of(v.value.(map[string]interface{}))
+		return MapOf(v.value.(map[string]interface{}))
 	}
 
 	// converts to map
@@ -347,7 +349,7 @@ func (v Any) Map() maps.Map {
 			k := fmt.Sprintf("%v", key)
 			valuesMap[k] = values.MapIndex(key).Interface()
 		}
-		return maps.Of(valuesMap)
+		return MapOf(valuesMap)
 	}
 
 	panic("v is not a type of map")

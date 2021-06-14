@@ -310,15 +310,23 @@ func TestMap(t *testing.T) {
 			"second": "Cool",
 		}}).Map()
 	assert.Equal(t, "world", map1.Get("hello"))
+	assert.Equal(t, "world", map1.Any("hello").String())
 	assert.Equal(t, "Join", map1.Dot().Get("name.first"))
+	assert.Equal(t, "Join", map1.Dot().Any("name.first").String())
+	assert.Equal(t, nil, map1.Dot().Get("name.notexist"))
+	assert.Equal(t, nil, map1.Dot().Any("name.notexist").Val())
+	assert.Equal(t, true, map1.Dot().Any("name.notexist").IsNil())
 
 	map1.Set("title", "CEO")
 	map2 := Of(map1).Map()
 	assert.Equal(t, "CEO", map2.Get("title"))
+	assert.Equal(t, "CEO", map2.Any("title").String())
 
 	map3 := Of(map[int]string{0: "0", 1: "1"}).Map()
 	assert.Equal(t, "0", map3.Get("0"))
+	assert.Equal(t, "0", map3.Any("0").String())
 	assert.Equal(t, "1", map3.Get("1"))
+	assert.Equal(t, "1", map3.Any("1").String())
 
 	assert.Panics(t, func() {
 		Of([]string{"hello", "world"}).Map()
