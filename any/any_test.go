@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/yaoapp/kun/day"
+	"github.com/yaoapp/kun/maps"
 	"github.com/yaoapp/kun/num"
 )
 
@@ -327,6 +328,9 @@ func TestMap(t *testing.T) {
 	assert.Equal(t, "0", map3.Any("0").String())
 	assert.Equal(t, "1", map3.Get("1"))
 	assert.Equal(t, "1", map3.Any("1").String())
+
+	map4 := Of(maps.Of(map[string]interface{}{"a": "b"})).Map()
+	assert.Equal(t, "b", map4.Get("a"))
 
 	assert.Panics(t, func() {
 		Of([]string{"hello", "world"}).Map()
