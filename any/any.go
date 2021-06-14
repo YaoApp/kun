@@ -336,23 +336,8 @@ func (v Any) Map() Map {
 		return v.value.(Map)
 	case maps.Map:
 		return Map{MapStrAny: v.value.(maps.Map)}
-	case map[string]interface{}:
-		return MapOf(v.value.(map[string]interface{}))
 	}
-
-	// converts to map
-	values := reflect.ValueOf(v.value)
-	values = reflect.Indirect(values)
-	if values.Kind() == reflect.Map {
-		valuesMap := map[string]interface{}{}
-		for _, key := range values.MapKeys() {
-			k := fmt.Sprintf("%v", key)
-			valuesMap[k] = values.MapIndex(key).Interface()
-		}
-		return MapOf(valuesMap)
-	}
-
-	panic("v is not a type of map")
+	return MapOf(v.value)
 }
 
 // IsDatetime checks whether <v> is type of datetime.
@@ -378,7 +363,7 @@ func (v Any) IsNumber() bool {
 // IsMap checks whether <v> is type of map.
 func (v Any) IsMap() bool {
 	switch v.value.(type) {
-	case map[string]interface{}, maps.Map:
+	case map[string]interface{}, maps.Map, Map:
 		return true
 	default:
 		typeof := reflect.TypeOf(v.value)

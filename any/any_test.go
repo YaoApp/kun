@@ -334,6 +334,9 @@ func TestMap(t *testing.T) {
 	map4 := Of(maps.Of(map[string]interface{}{"a": "b"})).Map()
 	assert.Equal(t, "b", map4.Get("a"))
 
+	map5 := Of(MakeMap()).Map()
+	assert.Equal(t, nil, map5.Any("somting").Get())
+
 	assert.Panics(t, func() {
 		Of([]string{"hello", "world"}).Map()
 	})
@@ -355,6 +358,8 @@ func TestIsNumber(t *testing.T) {
 func TestIsMap(t *testing.T) {
 	assert.Equal(t, true, Of(map[string]interface{}{"hello": "world"}).IsMap())
 	assert.Equal(t, true, Of(map[int]string{0: "0", 1: "1"}).IsMap())
+	assert.Equal(t, true, Of(MapOf(map[int]string{0: "0", 1: "1"})).IsMap())
+	assert.Equal(t, true, Of(MapOf(nil)).IsMap())
 	assert.Equal(t, false, Of([]string{"hello", "world"}).IsMap())
 }
 

@@ -12,9 +12,34 @@ type Map struct {
 	maps.MapStrAny
 }
 
-// MapOf create a new instance (the default type of map)
-func MapOf(values map[string]interface{}) Map {
-	return Map{MapStrAny: maps.MapStrAnyOf(values)}
+// MakeMap create a new  map instance
+func MakeMap() Map {
+	return Map{MapStrAny: maps.MapStrAnyOf(map[string]interface{}{})}
+}
+
+// MapOf create a new map instance
+func MapOf(values interface{}) Map {
+	if values == nil {
+		return MakeMap()
+	}
+	switch values.(type) {
+	case map[string]interface{}:
+		return Map{MapStrAny: maps.MapStrAnyOf(values.(map[string]interface{}))}
+	}
+
+	// converts to map
+	reflectValues := reflect.ValueOf(values)
+	reflectValues = reflect.Indirect(reflectValues)
+	if reflectValues.Kind() == reflect.Map {
+		valuesMap := map[string]interface{}{}
+		for _, key := range reflectValues.MapKeys() {
+			k := fmt.Sprintf("%v", key)
+			valuesMap[k] = reflectValues.MapIndex(key).Interface()
+		}
+		return Map{MapStrAny: maps.MapStrAnyOf(valuesMap)}
+	}
+
+	panic("v is not a type of map")
 }
 
 // Any returns the value stored in the map for a key.
@@ -31,7 +56,7 @@ func (m Map) Flatten() Map {
 // Dot The Dot method flattens a multi-dimensional map[string]inteface{} into a single level  map[string]inteface{}
 // that uses "dot" notation to indicate depth
 func (m Map) Dot() Map {
-	res := MapOf(map[string]interface{}{})
+	res := MakeMap()
 	m.Range(func(key string, value interface{}) bool {
 		res.dotSet(key, value)
 		return true
