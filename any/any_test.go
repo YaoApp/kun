@@ -306,6 +306,7 @@ func TestMap(t *testing.T) {
 	map1 := Of(map[string]interface{}{
 		"hello": "world",
 		"foo":   1,
+		"array": []string{"one", "two", "three"},
 		"name": map[string]interface{}{
 			"first":  "Join",
 			"second": "Cool",
@@ -315,8 +316,9 @@ func TestMap(t *testing.T) {
 	assert.Equal(t, "Join", map1.Dot().Get("name.first"))
 	assert.Equal(t, "Join", map1.Dot().Any("name.first").String())
 	assert.Equal(t, nil, map1.Dot().Get("name.notexist"))
-	assert.Equal(t, nil, map1.Dot().Any("name.notexist").Val())
-	assert.Equal(t, true, map1.Dot().Any("name.notexist").IsNil())
+	assert.Equal(t, nil, map1.Dot().Any("name.notexist").Interface())
+	assert.Equal(t, true, map1.Flatten().Any("name.notexist").IsNil())
+	assert.Equal(t, "two", map1.Flatten().Any("array.1").String())
 
 	map1.Set("title", "CEO")
 	map2 := Of(map1).Map()
