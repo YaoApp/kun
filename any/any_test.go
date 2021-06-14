@@ -381,9 +381,9 @@ func TestIsCollection(t *testing.T) {
 	assert.Equal(t, false, Of(5).IsCollection())
 }
 
-func TestIsSet(t *testing.T) {
-	assert.Equal(t, true, Of(1).IsSet())
-	assert.Equal(t, false, Of(nil).IsSet())
+func TestIsNotNil(t *testing.T) {
+	assert.Equal(t, true, Of(1).IsNotNil())
+	assert.Equal(t, false, Of(nil).IsNotNil())
 }
 
 func TestIsNil(t *testing.T) {

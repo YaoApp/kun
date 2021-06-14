@@ -436,8 +436,8 @@ func (v Any) IsCollection() bool {
 	return kind == reflect.Array || kind == reflect.Slice
 }
 
-// IsSet checks whether <v> is not nil.
-func (v Any) IsSet() bool {
+// IsNotNil checks whether <v> is not nil.
+func (v Any) IsNotNil() bool {
 	return v.value != nil
 }
 
