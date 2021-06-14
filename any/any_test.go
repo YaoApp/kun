@@ -335,7 +335,7 @@ func TestMap(t *testing.T) {
 	assert.Equal(t, "b", map4.Get("a"))
 
 	map5 := Of(MakeMap()).Map()
-	assert.Equal(t, nil, map5.Any("somting").Get())
+	assert.Equal(t, nil, map5.Any("notexist").Get())
 
 	assert.Panics(t, func() {
 		Of([]string{"hello", "world"}).Map()
