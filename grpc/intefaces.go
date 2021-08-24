@@ -2,9 +2,11 @@ package grpc
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/hashicorp/go-plugin"
 	"github.com/yaoapp/kun/grpc/proto"
+	"github.com/yaoapp/kun/maps"
 	"google.golang.org/grpc"
 )
 
@@ -23,8 +25,37 @@ var PluginMap = map[string]plugin.Plugin{
 
 // Model is the interface that we're exposing as a plugin.
 type Model interface {
-	Get(name string, payload []byte) ([]byte, error)
-	Put(name string, payload []byte) error
+	Exec(name string, args ...interface{}) (*Response, error)
+}
+
+// Response GRPC Response
+type Response struct {
+	Bytes []byte
+}
+
+// Bind bind struct
+func (res Response) Bind(v interface{}) error {
+	return json.Unmarshal(res.Bytes, &v)
+}
+
+// Map cast to map
+func (res Response) Map() (maps.MapStrAny, error) {
+	v := maps.MakeMapStrAny()
+	err := json.Unmarshal(res.Bytes, &v)
+	if err != nil {
+		return nil, err
+	}
+	return v, nil
+}
+
+// MustMap cast to map
+func (res Response) MustMap() maps.MapStrAny {
+	v := maps.MakeMapStrAny()
+	err := json.Unmarshal(res.Bytes, &v)
+	if err != nil {
+		panic(err)
+	}
+	return v
 }
 
 // ModelGRPCPlugin This is the implementation of plugin.Plugin so we can serve/consume this.

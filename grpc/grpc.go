@@ -1,6 +1,8 @@
 package grpc
 
 import (
+	"encoding/json"
+
 	"github.com/yaoapp/kun/grpc/proto"
 	"golang.org/x/net/context"
 )
@@ -8,18 +10,15 @@ import (
 // ClientGRPC is an implementation of KV that talks over RPC.
 type ClientGRPC struct{ client proto.ModelClient }
 
-// Put Model Put
-func (m *ClientGRPC) Put(name string, payload []byte) error {
-	_, err := m.client.Put(context.Background(), &proto.PutRequest{
-		Name:    name,
-		Payload: payload,
-	})
-	return err
-}
+// Exec execute the plugin model
+func (m *ClientGRPC) Exec(name string, args ...interface{}) (*Response, error) {
 
-// Get Model get
-func (m *ClientGRPC) Get(name string, payload []byte) ([]byte, error) {
-	resp, err := m.client.Get(context.Background(), &proto.GetRequest{
+	payload, err := json.Marshal(args)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := m.client.Exec(context.Background(), &proto.Request{
 		Name:    name,
 		Payload: payload,
 	})
@@ -27,7 +26,7 @@ func (m *ClientGRPC) Get(name string, payload []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	return resp.Response, nil
+	return &Response{Bytes: res.Response}, nil
 }
 
 // ServerGRPC Here is the gRPC server that ClientGRPC talks to.
@@ -36,17 +35,13 @@ type ServerGRPC struct {
 	Impl Model
 }
 
-// Put Server Put
-func (m *ServerGRPC) Put(
-	ctx context.Context,
-	req *proto.PutRequest) (*proto.Empty, error) {
-	return &proto.Empty{}, m.Impl.Put(req.Name, req.Payload)
-}
-
-// Get ServerGet
-func (m *ServerGRPC) Get(
-	ctx context.Context,
-	req *proto.GetRequest) (*proto.GetResponse, error) {
-	v, err := m.Impl.Get(req.Name, req.Payload)
-	return &proto.GetResponse{Response: v}, err
+// Exec ServerGet
+func (m *ServerGRPC) Exec(ctx context.Context, req *proto.Request) (*proto.Response, error) {
+	args := []interface{}{}
+	err := json.Unmarshal(req.Payload, &args)
+	if err != nil {
+		return nil, err
+	}
+	v, err := m.Impl.Exec(req.Name, args...)
+	return &proto.Response{Response: v.Bytes}, err
 }

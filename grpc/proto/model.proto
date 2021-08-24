@@ -2,23 +2,16 @@ syntax = "proto3";
 package proto;
 option go_package = "./";
 
-message GetRequest {
+
+message Request {
     string name = 1;
     bytes payload = 2;
 }
 
-message PutRequest {
-    string name = 1;
-    bytes payload = 2;
-}
-
-message GetResponse {
+message Response {
     bytes response = 1;
 }
 
-message Empty {}
-
 service Model {
-    rpc Get(GetRequest) returns (GetResponse);
-    rpc Put(PutRequest) returns (Empty);
+    rpc Exec( Request ) returns ( Response );
 }
