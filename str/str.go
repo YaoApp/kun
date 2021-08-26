@@ -171,10 +171,14 @@ func Kebab() {}
 func (s String) Kebab() {}
 
 // Length The Length method returns the length of the given string
-func Length() {}
+func Length(s string) int {
+	return len(s)
+}
 
 // Length The Length method returns the length of the given string
-func (s String) Length() {}
+func (s String) Length() int {
+	return Length(string(s))
+}
 
 // Limit The limit method truncates the given string to the specified length
 func Limit() {}
