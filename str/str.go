@@ -3,7 +3,10 @@ package str
 import (
 	"database/sql/driver"
 	"fmt"
+	"regexp"
 	"strings"
+
+	"github.com/yaoapp/kun/any"
 )
 
 // String type of string
@@ -12,6 +15,35 @@ type String string
 // Of make a new string
 func Of(value interface{}) String {
 	return String(fmt.Sprintf("%v", value))
+}
+
+// Bind apply data to the given template
+func Bind(input string, data interface{}) string {
+	row := any.Of(data).Map().Dot()
+	reg := regexp.MustCompile("{{[ ]*([^\\s]+[ ]*)}}")
+	matchs := reg.FindAllStringSubmatch(input, -1)
+	replaces := map[string]string{}
+	for _, match := range matchs {
+		name := match[0]
+		if _, has := replaces[name]; has {
+			continue
+		}
+		key := match[1]
+		if row.Has(key) {
+			replaces[name] = any.Of(row.Get(key)).CString()
+		}
+	}
+
+	for name, value := range replaces {
+		input = strings.ReplaceAll(input, name, value)
+	}
+
+	return input
+}
+
+// Bind apply data to the given template
+func (s String) Bind(data interface{}) string {
+	return Bind(string(s), data)
 }
 
 // After The After method returns everything after the given value in a string
@@ -223,10 +255,14 @@ func Remove() {}
 func (s String) Remove() {}
 
 // Replace The Replace method replaces a given string within the string:
-func Replace() {}
+func Replace(s string, old string, new string, n int) string {
+	return strings.Replace(s, old, new, n)
+}
 
 // Replace The Replace method replaces a given string within the string:
-func (s String) Replace() {}
+func (s String) Replace(old string, new string, n int) string {
+	return strings.Replace(string(s), old, new, n)
+}
 
 // ReplaceArray The ReplaceArray method replaces a given value in the string sequentially using an array
 func ReplaceArray() {}
