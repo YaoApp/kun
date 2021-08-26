@@ -29,6 +29,7 @@ func Bind(input string, data interface{}) string {
 			continue
 		}
 		key := match[1]
+		replaces[name] = ""
 		if row.Has(key) {
 			replaces[name] = any.Of(row.Get(key)).CString()
 		}

@@ -17,6 +17,6 @@ func TestBindMapStrAny(t *testing.T) {
 		},
 	}
 
-	content := Of("{{foo}} #{{num}} Sex:{{extra.sex}} Weight:{{extra.weight}}kg  {{extra}}").Bind(data)
-	assert.Equal(t, content, "bar #101 Sex:男 Weight:198kg  map[sex:男 weight:198]")
+	content := Of("{{foo}} #{{num}} Sex:{{extra.sex}} Weight:{{extra.weight}}kg  {{extra}} {{notfound}}").Bind(data)
+	assert.Equal(t, content, "bar #101 Sex:男 Weight:198kg  map[sex:男 weight:198] ")
 }
