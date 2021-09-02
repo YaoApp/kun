@@ -233,6 +233,24 @@ func TestStrAnyMerge(t *testing.T) {
 	}
 }
 
+func TestStrAnyUnDot(t *testing.T) {
+	m1 := Map{
+		"foo":             "bar",
+		"dot.hello.world": "hello world",
+		"dot.bingo.world": "hello bingo",
+		"nested": Map{
+			"foo": "bar",
+		},
+	}
+	res := m1.UnFlatten()
+	dot, ok := res.Get("dot").(Map)
+	assert.True(t, ok)
+	if ok {
+		assert.Equal(t, dot.Get("hello"), Map{"world": "hello world"})
+		assert.Equal(t, dot.Get("bingo"), Map{"world": "hello bingo"})
+	}
+}
+
 func checkArrayValues(t *testing.T, m interfaces.MapStrAny) {
 	assert.Equal(t, [2]int64{64, 64}, m.Get("arrayint64"))
 }

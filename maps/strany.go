@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"sort"
+	"strings"
 
 	"github.com/yaoapp/kun/interfaces"
 )
@@ -93,6 +94,12 @@ func (m MapStrAny) Flatten() MapStrAny {
 	return m.Dot()
 }
 
+// UnFlatten The UnFlatten method unflatten a single level map[string]inteface{} into  multi-dimensional  map[string]inteface{}
+// that uses "dot" notation to indicate depth
+func (m MapStrAny) UnFlatten() MapStrAny {
+	return m.UnDot()
+}
+
 // Dot The Dot method flattens a multi-dimensional map[string]inteface{} into a single level  map[string]inteface{}
 // that uses "dot" notation to indicate depth
 func (m MapStrAny) Dot() MapStrAny {
@@ -129,6 +136,41 @@ func (m MapStrAny) dotSet(key string, value interface{}) {
 	// 		return true
 	// 	})
 	// }
+}
+
+// UnDot The UnDot method unflatten a single level map[string]inteface{} into  multi-dimensional  map[string]inteface{}
+// that uses "dot" notation to indicate depth
+func (m MapStrAny) UnDot() MapStrAny {
+	res := MakeMapStrAny()
+	m.Range(func(key string, value interface{}) bool {
+		res.SetUnDot(key, value)
+		return true
+	})
+	return res
+}
+
+// SetUnDot set the value for a key uses "dot" notation
+func (m MapStrAny) SetUnDot(key string, value interface{}) {
+	if !strings.Contains(key, ".") {
+		m.Set(key, value)
+		return
+	}
+
+	keys := strings.Split(key, ".")
+	tail := strings.Join(keys[1:len(keys)], ".")
+	v, ok := m.Get(keys[0]).(MapStrAny)
+	if !ok {
+		v = MapStrAny{}
+	}
+	v[tail] = value
+
+	v.Range(func(key string, value interface{}) bool {
+		v.SetUnDot(key, value)
+		return true
+	})
+
+	m.Set(keys[0], v)
+	m.Del(key)
 }
 
 // Set set the value for a key
