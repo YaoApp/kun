@@ -157,7 +157,7 @@ func (m MapStrAny) SetUnDot(key string, value interface{}) {
 	}
 
 	keys := strings.Split(key, ".")
-	tail := strings.Join(keys[1:len(keys)], ".")
+	tail := strings.Join(keys[1:], ".")
 	v, ok := m.Get(keys[0]).(MapStrAny)
 	if !ok {
 		v = MapStrAny{}
