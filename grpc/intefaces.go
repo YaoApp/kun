@@ -2,60 +2,43 @@ package grpc
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/hashicorp/go-plugin"
 	"github.com/yaoapp/kun/grpc/proto"
-	"github.com/yaoapp/kun/maps"
 	"google.golang.org/grpc"
 )
 
-// Handshake is a common handshake that is shared by plugin and host.
-var Handshake = plugin.HandshakeConfig{
-	// This isn't required when using VersionedPlugins
-	ProtocolVersion:  1,
-	MagicCookieKey:   "MODEL_PLUGIN",
-	MagicCookieValue: "hello",
-}
+// Level represents a log level.
+type Level int32
 
-// PluginMap is the map of plugins we can dispense.
-var PluginMap = map[string]plugin.Plugin{
-	"model": &ModelGRPCPlugin{},
-}
+const (
+	// NoLevel is a special level used to indicate that no level has been
+	// set and allow for a default to be used.
+	NoLevel Level = 0
+
+	// Trace is the most verbose level. Intended to be used for the tracing
+	// of actions in code, such as function enters/exits, etc.
+	Trace Level = 1
+
+	// Debug information for programmer lowlevel analysis.
+	Debug Level = 2
+
+	// Info information about steady state operations.
+	Info Level = 3
+
+	// Warn information about rare but handled events.
+	Warn Level = 4
+
+	// Error information about unrecoverable events.
+	Error Level = 5
+
+	// Off disables all logging output.
+	Off Level = 6
+)
 
 // Model is the interface that we're exposing as a plugin.
 type Model interface {
 	Exec(name string, args ...interface{}) (*Response, error)
-}
-
-// Response GRPC Response
-type Response struct {
-	Bytes []byte
-}
-
-// Bind bind struct
-func (res Response) Bind(v interface{}) error {
-	return json.Unmarshal(res.Bytes, &v)
-}
-
-// Map cast to map
-func (res Response) Map() (maps.MapStrAny, error) {
-	v := maps.MakeMapStrAny()
-	err := json.Unmarshal(res.Bytes, &v)
-	if err != nil {
-		return nil, err
-	}
-	return v, nil
-}
-
-// MustMap cast to map
-func (res Response) MustMap() maps.MapStrAny {
-	v := maps.MakeMapStrAny()
-	err := json.Unmarshal(res.Bytes, &v)
-	if err != nil {
-		panic(err)
-	}
-	return v
 }
 
 // ModelGRPCPlugin This is the implementation of plugin.Plugin so we can serve/consume this.
@@ -65,6 +48,25 @@ type ModelGRPCPlugin struct {
 	// Concrete implementation, written in Go. This is only used for plugins
 	// that are written in Go.
 	Impl Model
+}
+
+// Handshake is a common handshake that is shared by plugin and host.
+var Handshake = plugin.HandshakeConfig{
+	// This isn't required when using VersionedPlugins
+	ProtocolVersion:  1,
+	MagicCookieKey:   "GOU_MODEL_PLUGIN",
+	MagicCookieValue: "GOU VER0.6.0",
+}
+
+// PluginMap is the map of plugins we can dispense.
+var PluginMap = map[string]plugin.Plugin{
+	"model": &ModelGRPCPlugin{},
+}
+
+// Response GRPC Response
+type Response struct {
+	Bytes []byte
+	Type  string
 }
 
 // GRPCServer the GRPC Server

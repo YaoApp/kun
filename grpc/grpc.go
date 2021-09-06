@@ -26,7 +26,7 @@ func (m *ClientGRPC) Exec(name string, args ...interface{}) (*Response, error) {
 		return nil, err
 	}
 
-	return &Response{Bytes: res.Response}, nil
+	return &Response{Bytes: res.Response, Type: res.Type}, nil
 }
 
 // ServerGRPC Here is the gRPC server that ClientGRPC talks to.
@@ -43,5 +43,5 @@ func (m *ServerGRPC) Exec(ctx context.Context, req *proto.Request) (*proto.Respo
 		return nil, err
 	}
 	v, err := m.Impl.Exec(req.Name, args...)
-	return &proto.Response{Response: v.Bytes}, err
+	return &proto.Response{Response: v.Bytes, Type: v.Type}, err
 }

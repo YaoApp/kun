@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/TylerBrock/colorjson v0.0.0-20200706003622-8a50f05110d2
 	github.com/fatih/color v1.12.0
-	github.com/hashicorp/go-hclog v0.16.2 // indirect
+	github.com/hashicorp/go-hclog v0.16.2
 	github.com/hashicorp/go-plugin v1.4.2
 	github.com/hashicorp/yamux v0.0.0-20210707203944-259a57b3608c // indirect
 	github.com/hokaccha/go-prettyjson v0.0.0-20210113012101-fb4e108d2519 // indirect

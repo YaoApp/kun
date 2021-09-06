@@ -10,6 +10,7 @@ message Request {
 
 message Response {
     bytes response = 1;
+    string type = 2;
 }
 
 service Model {
