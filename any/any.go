@@ -84,8 +84,7 @@ func (v Any) String() string {
 
 // CString converts and returns <v> as string.
 func (v Any) CString() string {
-
-	if v.IsEmpty() {
+	if v.value == nil {
 		return ""
 	}
 
