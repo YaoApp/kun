@@ -147,6 +147,7 @@ func (v Any) CInt() int {
 	if ok {
 		return value
 	}
+
 	value, _ = strconv.Atoi(fmt.Sprintf("%.0f", v.CFloat64()))
 	// if err != nil {
 	// 	panic(err.Error())
@@ -221,6 +222,11 @@ func (v Any) CFloat64() float64 {
 	if ok {
 		return value
 	}
+
+	if v.IsString() && v.String() == "" {
+		return 0
+	}
+
 	value, err := strconv.ParseFloat(fmt.Sprintf("%v", v.value), 64)
 	if err != nil {
 		panic(err.Error())
@@ -395,6 +401,16 @@ func (v Any) IsInt() bool {
 func (v Any) IsFloat() bool {
 	switch v.value.(type) {
 	case float32, float64:
+		return true
+	default:
+		return false
+	}
+}
+
+// IsString checks whether <v> is type of string.
+func (v Any) IsString() bool {
+	switch v.value.(type) {
+	case string:
 		return true
 	default:
 		return false
