@@ -30,7 +30,7 @@ func Bind(input string, data interface{}) string {
 		}
 		key := match[1]
 		replaces[name] = ""
-		if row.Has(key) {
+		if row.Has(key) && row.Get(key) != nil {
 			replaces[name] = any.Of(row.Get(key)).CString()
 		}
 	}
