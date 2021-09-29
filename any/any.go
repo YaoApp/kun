@@ -84,6 +84,11 @@ func (v Any) String() string {
 
 // CString converts and returns <v> as string.
 func (v Any) CString() string {
+
+	if v.IsEmpty() {
+		return ""
+	}
+
 	value, ok := v.value.(string)
 	if ok {
 		return value
