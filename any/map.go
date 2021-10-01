@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/yaoapp/kun/maps"
+	"github.com/yaoapp/kun/share"
 )
 
 // Map the replacement for Maps.Map
@@ -41,7 +42,7 @@ func MapOf(values interface{}) Map {
 		valuesMap := map[string]interface{}{}
 		typeOfS := reflectValues.Type()
 		for i := 0; i < reflectValues.NumField(); i++ {
-			name := GetTagName(typeOfS.Field(i), "json")
+			name := share.GetTagName(typeOfS.Field(i), "json")
 			valuesMap[name] = reflectValues.Field(i).Interface()
 		}
 		return Map{MapStrAny: maps.MapStrAnyOf(valuesMap)}

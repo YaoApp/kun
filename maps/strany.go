@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/yaoapp/kun/interfaces"
+	"github.com/yaoapp/kun/share"
 )
 
 // Map alias of MapStrAny
@@ -129,13 +130,14 @@ func (m MapStrAny) dotSet(key string, value interface{}) {
 		for _, sub := range reflectValue.MapKeys() {
 			m.dotSet(fmt.Sprintf("%s.%v", key, sub), reflectValue.MapIndex(sub).Interface())
 		}
+
+	} else if valueKind == reflect.Struct { // Struct
+		typeOfS := reflectValue.Type()
+		for i := 0; i < reflectValue.NumField(); i++ {
+			sub := share.GetTagName(typeOfS.Field(i), "json")
+			m.dotSet(fmt.Sprintf("%s.%v", key, sub), reflectValue.Field(i).Interface())
+		}
 	}
-	// } else if subMap, ok := value.(MapStrAny); ok { // map[string]interface{}
-	// 	subMap.Range(func(sub string, val interface{}) bool {
-	// 		m.dotSet(sub, val)
-	// 		return true
-	// 	})
-	// }
 }
 
 // UnDot The UnDot method unflatten a single level map[string]inteface{} into  multi-dimensional  map[string]inteface{}
