@@ -12,6 +12,9 @@ import (
 // String type of string
 type String string
 
+var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
+var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
+
 // Of make a new string
 func Of(value interface{}) String {
 	return String(fmt.Sprintf("%v", value))
@@ -306,10 +309,16 @@ func Slug() {}
 func (s String) Slug() {}
 
 // Snake The Snake method converts the given string to snake_case
-func Snake() {}
+func Snake(str string) string {
+	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")
+	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
+	return strings.ToLower(snake)
+}
 
 // Snake The Snake method converts the given string to snake_case
-func (s String) Snake() {}
+func (s String) Snake() string {
+	return Snake(string(s))
+}
 
 // Split The Split method splits a string into a collection using a regular expression
 func Split() {}

@@ -37,9 +37,17 @@ func MapOf(values interface{}) Map {
 			valuesMap[k] = reflectValues.MapIndex(key).Interface()
 		}
 		return Map{MapStrAny: maps.MapStrAnyOf(valuesMap)}
+	} else if reflectValues.Kind() == reflect.Struct {
+		valuesMap := map[string]interface{}{}
+		typeOfS := reflectValues.Type()
+		for i := 0; i < reflectValues.NumField(); i++ {
+			name := GetTagName(typeOfS.Field(i), "json")
+			valuesMap[name] = reflectValues.Field(i).Interface()
+		}
+		return Map{MapStrAny: maps.MapStrAnyOf(valuesMap)}
 	}
 
-	panic("v is not a type of map")
+	panic(fmt.Sprintf("v is %s not a type of map", reflectValues.Kind()))
 }
 
 // Any returns the value stored in the map for a key.
