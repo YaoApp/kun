@@ -130,7 +130,8 @@ func TestStrAnyRange(t *testing.T) {
 func TestStrAnyFlatten(t *testing.T) {
 	_, _, _, _, all := prepareTestingData()
 	flatten := Of(all).Flatten()
-	if assert.Equal(t, 62, flatten.Len(), "The length of map should be 62") {
+
+	if assert.Equal(t, 64, flatten.Len(), "The length of map should be 64") {
 		values := flatten.Values()
 		for i, key := range flatten.Keys() {
 			assert.Equal(t, values[i], flatten.Get(key))
@@ -142,7 +143,7 @@ func TestStrAnyHas(t *testing.T) {
 	_, _, _, _, all := prepareTestingData()
 	flatten := Of(all).Flatten()
 	keys := flatten.Keys()
-	if assert.Equal(t, 62, len(keys), "The length of keys should be 62") {
+	if assert.Equal(t, 64, len(keys), "The length of keys should be 64") {
 		for _, key := range keys {
 			assert.True(t, flatten.Has(key))
 		}
