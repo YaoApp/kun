@@ -1,6 +1,6 @@
 # Kun
 
-[![Build Status](https://travis-ci.com/YaoApp/kun.svg?branch=main)](https://travis-ci.com/YaoApp/kun)
+[![UnitTest](https://github.com/YaoApp/kun/actions/workflows/unit-test.yml/badge.svg)](https://github.com/YaoApp/kun/actions/workflows/unit-test.yml)
 [![codecov](https://codecov.io/gh/YaoApp/kun/branch/main/graph/badge.svg?token=R4FW9PXF01)](https://codecov.io/gh/YaoApp/kun)
 [![Go Report Card](https://goreportcard.com/badge/github.com/YaoApp/kun)](https://goreportcard.com/report/github.com/YaoApp/kun)
 [![Go Reference](https://pkg.go.dev/badge/github.com/yaoapp/kun.svg)](https://pkg.go.dev/github.com/yaoapp/kun)
