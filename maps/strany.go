@@ -135,7 +135,9 @@ func (m MapStrAny) dotSet(key string, value interface{}) {
 		typeOfS := reflectValue.Type()
 		for i := 0; i < reflectValue.NumField(); i++ {
 			sub := share.GetTagName(typeOfS.Field(i), "json")
-			m.dotSet(fmt.Sprintf("%s.%v", key, sub), reflectValue.Field(i).Interface())
+			if reflectValue.Field(i).CanInterface() {
+				m.dotSet(fmt.Sprintf("%s.%v", key, sub), reflectValue.Field(i).Interface())
+			}
 		}
 	}
 }
