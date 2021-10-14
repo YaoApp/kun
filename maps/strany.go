@@ -115,8 +115,6 @@ func (m MapStrAny) Dot() MapStrAny {
 // dotSet set the value for a key uses "dot" notation
 func (m MapStrAny) dotSet(key string, value interface{}) {
 
-	m.Set(key, value)
-
 	reflectValue := reflect.ValueOf(value)
 	reflectValue = reflect.Indirect(reflectValue)
 	valueKind := reflectValue.Kind()
@@ -132,14 +130,31 @@ func (m MapStrAny) dotSet(key string, value interface{}) {
 		}
 
 	} else if valueKind == reflect.Struct { // Struct
+
+		if toMap := reflect.ValueOf(value).MethodByName("ToMap"); toMap.IsValid() {
+			args := []reflect.Value{}
+			values := toMap.Call(args)
+			if len(values) == 1 {
+				v, ok := values[0].Interface().(map[string]interface{})
+				if ok {
+					m.dotSet(key, v)
+				}
+			}
+			return
+		}
+
+		// auto struct
 		typeOfS := reflectValue.Type()
 		for i := 0; i < reflectValue.NumField(); i++ {
 			sub := share.GetTagName(typeOfS.Field(i), "json")
 			if reflectValue.Field(i).CanInterface() {
-				m.dotSet(fmt.Sprintf("%s.%v", key, sub), reflectValue.Field(i).Interface())
+				v := reflectValue.Field(i).Interface()
+				m.dotSet(fmt.Sprintf("%s.%v", key, sub), v)
 			}
 		}
 	}
+
+	m.Set(key, value)
 }
 
 // UnDot The UnDot method unflatten a single level map[string]inteface{} into  multi-dimensional  map[string]inteface{}
