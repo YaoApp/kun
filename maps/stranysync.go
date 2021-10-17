@@ -1,6 +1,7 @@
 package maps
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"sort"
@@ -229,4 +230,14 @@ func (m MapStrAnySync) Merge(maps ...interfaces.MapStrAny) {
 			return true
 		})
 	}
+}
+
+// MarshalJSON for json marshalJSON
+func (m MapStrAnySync) MarshalJSON() ([]byte, error) {
+	res := map[string]interface{}{}
+	m.Range(func(key string, value interface{}) bool {
+		res[key] = value
+		return true
+	})
+	return json.Marshal(res)
 }
