@@ -82,7 +82,7 @@ func (exception *Exception) Ctx(context interface{}) *Exception {
 }
 
 // Print print the exception
-func (exception *Exception) Print() {
+func (exception Exception) Print() {
 	f := colorjson.NewFormatter()
 	f.Indent = 2
 	var res interface{}
@@ -93,12 +93,12 @@ func (exception *Exception) Print() {
 }
 
 // Throw Throw the exception and terminal progress.
-func (exception *Exception) Throw() {
-	panic(*exception)
+func (exception Exception) Throw() {
+	panic(exception)
 }
 
 // String interface
-func (exception *Exception) String() string {
+func (exception Exception) String() string {
 	txt, _ := json.Marshal(exception)
 	return string(txt)
 }
