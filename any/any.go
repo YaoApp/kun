@@ -131,6 +131,38 @@ func (v Any) CStrings() []string {
 	return res
 }
 
+// Array returns <v> as []interface{}
+func (v Any) Array() []interface{} {
+	if v.value == nil {
+		return []interface{}{}
+	}
+
+	value, ok := v.value.([]interface{})
+	if !ok {
+		panic("v is not a type of []interface{}")
+	}
+	return value
+}
+
+// CArray returns <v> as []interface{}
+func (v Any) CArray() []interface{} {
+	if v.value == nil {
+		return []interface{}{}
+	}
+
+	if !v.IsArray() && !v.IsSlice() {
+		panic("v is not a type of Array of Slice")
+	}
+
+	res := []interface{}{}
+	values := reflect.ValueOf(v.value)
+	values = reflect.Indirect(values)
+	for i := 0; i < values.Len(); i++ {
+		res = append(res, values.Index(i).Interface())
+	}
+	return res
+}
+
 // Int returns <v> as int
 func (v Any) Int() int {
 	if v.value == nil {

@@ -277,6 +277,32 @@ func TestCBool(t *testing.T) {
 	})
 }
 
+func TestArray(t *testing.T) {
+	v := Of([]interface{}{"hello", "world"})
+	assert.Equal(t, []interface{}{"hello", "world"}, v.Array())
+
+	v.Set(nil)
+	assert.Equal(t, []interface{}{}, v.Array())
+
+	v.Set("hello")
+	assert.Panics(t, func() {
+		fmt.Println(v.Strings())
+	})
+}
+
+func TestCArray(t *testing.T) {
+	v := Of([]string{"hello", "world"})
+	assert.Equal(t, []interface{}{"hello", "world"}, v.CArray())
+
+	v.Set(nil)
+	assert.Equal(t, []interface{}{}, v.CArray())
+
+	v.Set("hello")
+	assert.Panics(t, func() {
+		fmt.Println(v.CArray())
+	})
+}
+
 func TestNumber(t *testing.T) {
 	num1 := Of(0.618).Number()
 	assert.Equal(t, 0.618, num1.Float())
