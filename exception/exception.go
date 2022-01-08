@@ -94,7 +94,7 @@ func (exception *Exception) Print() {
 
 // Throw Throw the exception and terminal progress.
 func (exception *Exception) Throw() {
-	panic(exception)
+	panic(*exception)
 }
 
 // String interface
