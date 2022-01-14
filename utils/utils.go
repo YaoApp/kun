@@ -22,6 +22,11 @@ func Dump(values ...interface{}) {
 	f.Indent = 4
 	for _, v := range values {
 		var res interface{}
+		if err, ok := v.(error); ok {
+			fmt.Printf("%s\n", err.Error())
+			continue
+		}
+
 		txt, err := json.Marshal(v)
 		if err != nil {
 			fmt.Printf("%#v\n%s\n", v, err)
