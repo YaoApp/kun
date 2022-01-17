@@ -33,6 +33,20 @@ func Err(err error, code int) *Exception {
 	}
 }
 
+// Catch Exception catch and recovered
+func Catch(recovered interface{}) error {
+	if recovered == nil {
+		return nil
+	} else if err, ok := recovered.(string); ok {
+		return fmt.Errorf("%s", err)
+	} else if err, ok := recovered.(Exception); ok {
+		return fmt.Errorf("%s", err.Message)
+	} else if err, ok := recovered.(*Exception); ok {
+		return fmt.Errorf("%s", err.Message)
+	}
+	return fmt.Errorf("%s", recovered)
+}
+
 // CatchPrint Catch the exception and print it
 func CatchPrint() {
 	if r := recover(); r != nil {
