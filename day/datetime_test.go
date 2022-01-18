@@ -116,3 +116,10 @@ func TestGetTimezone(t *testing.T) {
 	assert.Equal(t, "Beijing", name)
 
 }
+
+func TestFormat(t *testing.T) {
+	day := Of("2021-02-05T00:00:00Z")
+	assert.Equal(t, 2021, day.Year())
+	assert.Equal(t, time.Month(2), day.Month())
+	assert.Equal(t, 5, day.Day())
+}
