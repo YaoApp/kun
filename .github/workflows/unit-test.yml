@@ -36,8 +36,8 @@ jobs:
           go mod download
           PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
           echo $PATH 
-          find "${GOROOT}"
           go version
+          echo "${GOROOT}"
 
       #     make tools
       - name: Run Test
