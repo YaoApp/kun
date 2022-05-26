@@ -37,7 +37,8 @@ jobs:
           PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
           echo $PATH 
           ls -l "${GOROOT}"
-          ls -l "${GOROOT}/*"
+          ls -l "${GOROOT}/bin"
+          go version
 
       #     make tools
       - name: Run Test
