@@ -33,11 +33,11 @@ jobs:
 
       - name: Setup Go Tools
         run: |
-          echo $PATH 
-          go mod download
+          PATH="${PATH}:${GOROOT}/bin"
+          echo $PATH
           go version
+          echo "${GOROOT}"
 
-      #     make tools
       - name: Run Test
         run: |
           make vet
