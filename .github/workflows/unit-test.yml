@@ -33,11 +33,9 @@ jobs:
 
       - name: Setup Go Tools
         run: |
-          go mod download
-          PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
           echo $PATH 
+          go mod download
           go version
-          echo "${GOROOT}"
 
       #     make tools
       - name: Run Test
