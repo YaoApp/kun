@@ -37,7 +37,8 @@ jobs:
           echo $PATH
           go version
           go get -u github.com/client9/misspell/cmd/misspell
-          ls -l /home/runner/go/bin/
+          find /home/runner/go
+          find /opt/hostedtoolcache/go/1.18.2/x64/pkg/tool/linux_amd64
 
       - name: Run Test
         run: |
