@@ -32,26 +32,14 @@ jobs:
 
       - name: Setup Go Tools
         run: |
-          echo $PATH
-          PATH="${PATH}:/home/runner/go/bin"
-          echo $PATH
-          go version
-          go install golang.org/x/lint/golint@latest;
-          go install github.com/client9/misspell/cmd/misspell@latest
-          ls -l /home/runner/go/bin
+          make tools
 
       - name: Run Test
         run: |
-          echo ${GOPATH}
-          PATH="${PATH}:/home/runner/go/bin"
-          echo $PATH
-          ls -l /home/runner/go/bin
           make vet
           make fmt-check
           make misspell-check
           make test
-        env:
-          GOPATH: /home/runner/go
 
       - name: Codecov Report
         uses: codecov/codecov-action@v2
