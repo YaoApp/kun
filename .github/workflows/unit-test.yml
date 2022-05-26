@@ -5,7 +5,8 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-
+env:
+  GO111MODULE: on
 jobs:
   unit-test:
     runs-on: ubuntu-latest
@@ -34,10 +35,10 @@ jobs:
       - name: Setup Go Tools
         run: |
           echo $PATH
-          PATH="${PATH}:${GOROOT}/bin"
+          PATH="${PATH}:${GOPATH}/bin"
           echo $PATH
           go version
-          go get -u github.com/client9/misspell/cmd/misspell;
+          go get -u github.com/client9/misspell/cmd/misspell
 
       - name: Run Test
         run: |
