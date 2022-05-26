@@ -35,8 +35,7 @@ jobs:
         run: |
           go mod download
           PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
-          make tools
-
+      #     make tools
       - name: Run Test
         run: |
           make vet
