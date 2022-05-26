@@ -35,10 +35,9 @@ jobs:
         run: |
           go mod download
           PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
-          get -u github.com/client9/misspell/cmd/misspell
           echo $PATH 
-          ls -l "${GOPATH}"
-          ls -l "${GOPATH}/*"
+          ls -l "${GOROOT}"
+          ls -l "${GOROOT}/*"
 
       #     make tools
       - name: Run Test
