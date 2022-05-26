@@ -33,10 +33,11 @@ jobs:
 
       - name: Setup Go Tools
         run: |
+          echo $PATH
           PATH="${PATH}:${GOROOT}/bin"
           echo $PATH
           go version
-          echo "${GOROOT}"
+          go get -u github.com/client9/misspell/cmd/misspell;
 
       - name: Run Test
         run: |
