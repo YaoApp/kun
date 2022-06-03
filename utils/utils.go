@@ -25,6 +25,11 @@ func Dump(values ...interface{}) {
 			continue
 		}
 
+		// to Map
+		if value, ok := v.(interface{ Map() map[string]interface{} }); ok {
+			v = value.Map()
+		}
+
 		txt, err := jsoniter.Marshal(v)
 		if err != nil {
 			fmt.Printf("%#v\n%s\n", v, err)
