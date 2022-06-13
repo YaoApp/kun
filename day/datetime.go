@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 	"unicode"
+
+	"github.com/yaoapp/kun/log"
 )
 
 // Datetime type of day
@@ -18,10 +20,12 @@ type Datetime struct {
 var defaultLocation *time.Location = nil
 
 var defaultFormats = []string{
+	time.RFC3339,
+	time.RFC3339Nano,
 	"2006-01-02T15:04:05-0700",
 	"2006-01-02T15:04:05.000Z",
+	"2006-01-02T15:04:05+07:00",
 	"2006-01-02T15:04:05Z",
-	"2006-01-02T15:04:05+08:00",
 	"2006-01-02T15:04:05",
 	"2006-01-02 15:04:05",
 	"2006-01-02",
@@ -68,6 +72,7 @@ func Of(value interface{}, formats ...string) *Datetime {
 			}
 			return &Datetime{Time: valueTime}
 		}
+		log.Trace("ERROR: %s", err.Error())
 	}
 	panic("the given value is not time format")
 }
