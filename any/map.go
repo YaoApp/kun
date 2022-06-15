@@ -84,7 +84,8 @@ func (m Map) dotSet(key string, value interface{}) {
 
 	if valueKind == reflect.Slice || valueKind == reflect.Array { // Slice || Array
 		for i := 0; i < reflectValue.Len(); i++ {
-			m.dotSet(fmt.Sprintf("%s.%d", key, i), reflectValue.Index(i).Interface())
+			m.dotSet(fmt.Sprintf("%s.%d", key, i), reflectValue.Index(i).Interface())  // array.0
+			m.dotSet(fmt.Sprintf("%s[%d]", key, i), reflectValue.Index(i).Interface()) // array[0]
 		}
 
 	} else if valueKind == reflect.Map { // Map

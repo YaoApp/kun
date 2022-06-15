@@ -121,7 +121,8 @@ func (m MapStrAny) dotSet(key string, value interface{}) {
 
 	if valueKind == reflect.Slice || valueKind == reflect.Array { // Slice || Array
 		for i := 0; i < reflectValue.Len(); i++ {
-			m.dotSet(fmt.Sprintf("%s.%d", key, i), reflectValue.Index(i).Interface())
+			m.dotSet(fmt.Sprintf("%s.%d", key, i), reflectValue.Index(i).Interface())  // xxx.0
+			m.dotSet(fmt.Sprintf("%s[%d]", key, i), reflectValue.Index(i).Interface()) // xxx[0]
 		}
 
 	} else if valueKind == reflect.Map { // Map
