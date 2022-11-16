@@ -118,13 +118,16 @@ func (m MapStrAny) dotSet(key string, value interface{}) {
 	reflectValue := reflect.ValueOf(value)
 	reflectValue = reflect.Indirect(reflectValue)
 	valueKind := reflectValue.Kind()
+	_, bytes := value.([]byte)
 
-	if valueKind == reflect.Slice || valueKind == reflect.Array { // Slice || Array
+	if (valueKind == reflect.Slice || valueKind == reflect.Array) && !bytes { // Slice || Array
 		for i := 0; i < reflectValue.Len(); i++ {
 			m.dotSet(fmt.Sprintf("%s.%d", key, i), reflectValue.Index(i).Interface())  // xxx.0
 			m.dotSet(fmt.Sprintf("%s[%d]", key, i), reflectValue.Index(i).Interface()) // xxx[0]
+			if i > 256 {
+				return
+			}
 		}
-
 	} else if valueKind == reflect.Map { // Map
 		for _, sub := range reflectValue.MapKeys() {
 			m.dotSet(fmt.Sprintf("%s.%v", key, sub), reflectValue.MapIndex(sub).Interface())
