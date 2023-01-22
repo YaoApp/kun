@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"runtime/debug"
+	"strings"
 
 	"github.com/TylerBrock/colorjson"
 	"github.com/fatih/color"
+	"github.com/yaoapp/kun/any"
 )
 
 // Exception the Exception type
@@ -19,18 +21,20 @@ type Exception struct {
 // New Create a new exception instance
 func New(message string, code int, args ...interface{}) *Exception {
 	content := fmt.Sprintf(message, args...)
-	return &Exception{
-		Message: content,
-		Code:    code,
+	if strings.HasPrefix(content, "Exception|") {
+		msg := strings.Split(strings.TrimPrefix(content, "Exception|"), ":")
+		content = msg[0]
+		if len(msg) == 2 {
+			code = any.Of(msg[0]).CInt()
+			content = msg[1]
+		}
 	}
+	return &Exception{Message: content, Code: code}
 }
 
 // Err Create an exception instance from the error
 func Err(err error, code int) *Exception {
-	return &Exception{
-		Message: err.Error(),
-		Code:    code,
-	}
+	return New(err.Error(), code)
 }
 
 // Catch Exception catch and recovered
