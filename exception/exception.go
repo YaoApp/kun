@@ -26,7 +26,7 @@ func New(message string, code int, args ...interface{}) *Exception {
 		content = msg[0]
 		if len(msg) == 2 {
 			code = any.Of(msg[0]).CInt()
-			content = msg[1]
+			content = strings.TrimSpace(msg[1])
 		}
 	}
 	return &Exception{Message: content, Code: code}
