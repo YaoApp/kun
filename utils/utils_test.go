@@ -25,3 +25,11 @@ func TestDump(t *testing.T) {
 	os.Stdout = rescueStdout
 	assert.True(t, strings.Contains(string(out), "foo"), "the command return value should be have foo...")
 }
+
+func TestDumpString(t *testing.T) {
+	Dump("hello world")
+}
+
+func TestDumpNumber(t *testing.T) {
+	Dump(1024)
+}
