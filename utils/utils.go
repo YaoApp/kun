@@ -41,9 +41,10 @@ func Dump(values ...interface{}) {
 			var res interface{}
 			txt, err := jsoniter.Marshal(v)
 			if err != nil {
-				fmt.Printf("%#v\n%s\n", v, err)
+				color.Red(err.Error())
 				continue
 			}
+
 			jsoniter.Unmarshal(txt, &res)
 			s, _ := f.Marshal(res)
 			fmt.Printf("%s\n", s)
