@@ -11,6 +11,9 @@ import (
 	"github.com/yaoapp/kun/any"
 )
 
+// Mode the mode of the application
+var Mode = "production"
+
 // Exception the Exception type
 type Exception struct {
 	Message string      `json:"message"`
@@ -39,18 +42,27 @@ func Err(err error, code int) *Exception {
 
 // Catch Exception catch and recovered
 func Catch(recovered interface{}, err ...error) error {
+
 	if recovered == nil {
 		if len(err) > 0 {
+			printTrace(recovered, err...)
 			return err[0]
 		}
 		return nil
-	} else if err, ok := recovered.(string); ok {
-		return fmt.Errorf("%s", err)
-	} else if err, ok := recovered.(Exception); ok {
-		return fmt.Errorf("%s", err.Message)
-	} else if err, ok := recovered.(*Exception); ok {
-		return fmt.Errorf("%s", err.Message)
+	} else if v, ok := recovered.(string); ok {
+		printTrace(recovered, err...)
+		return fmt.Errorf("%s", v)
+
+	} else if v, ok := recovered.(Exception); ok {
+		printTrace(recovered, err...)
+		return fmt.Errorf("%s", v.Message)
+
+	} else if v, ok := recovered.(*Exception); ok {
+		printTrace(recovered, err...)
+		return fmt.Errorf("%s", v.Message)
 	}
+
+	printTrace(recovered, err...)
 	return fmt.Errorf("%s", recovered)
 }
 
@@ -122,4 +134,13 @@ func (exception Exception) Throw() {
 func (exception Exception) String() string {
 	txt, _ := json.Marshal(exception)
 	return string(txt)
+}
+
+func printTrace(recovered interface{}, err ...error) {
+
+	if Mode == "development" {
+		color.Red("Trace Recovered: %v\n", recovered)
+		fmt.Printf("%s\n", debug.Stack())
+		color.Red("Trace End\n\n")
+	}
 }
