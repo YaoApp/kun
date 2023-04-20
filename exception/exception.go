@@ -45,8 +45,19 @@ func Catch(recovered interface{}, err ...error) error {
 
 	if recovered == nil {
 		if len(err) > 0 {
+			messages := []string{}
+			for _, e := range err {
+				if e != nil {
+					messages = append(messages, e.Error())
+				}
+			}
+
+			if len(messages) == 0 {
+				return nil
+			}
+
 			printTrace(recovered, err...)
-			return err[0]
+			return fmt.Errorf("%s", strings.Join(messages, ", "))
 		}
 		return nil
 	} else if v, ok := recovered.(string); ok {
