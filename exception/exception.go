@@ -3,6 +3,7 @@ package exception
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"runtime/debug"
 	"strings"
 
@@ -14,6 +15,8 @@ import (
 // Mode the mode of the application
 var Mode = "production"
 
+var reEx = regexp.MustCompile(`Exception\|(\d+):(.*)`)
+
 // Exception the Exception type
 type Exception struct {
 	Message string      `json:"message"`
@@ -24,13 +27,10 @@ type Exception struct {
 // New Create a new exception instance
 func New(message string, code int, args ...interface{}) *Exception {
 	content := fmt.Sprintf(message, args...)
-	if strings.HasPrefix(content, "Exception|") {
-		msg := strings.Split(strings.TrimPrefix(content, "Exception|"), ":")
-		content = msg[0]
-		if len(msg) == 2 {
-			code = any.Of(msg[0]).CInt()
-			content = strings.TrimSpace(msg[1])
-		}
+	match := reEx.FindStringSubmatch(content)
+	if len(match) > 0 {
+		code = any.Of(match[1]).CInt()
+		content = strings.TrimSpace(match[2])
 	}
 	return &Exception{Message: content, Code: code}
 }
