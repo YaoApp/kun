@@ -124,9 +124,6 @@ func (m MapStrAny) dotSet(key string, value interface{}) {
 		for i := 0; i < reflectValue.Len(); i++ {
 			m.dotSet(fmt.Sprintf("%s.%d", key, i), reflectValue.Index(i).Interface())  // xxx.0
 			m.dotSet(fmt.Sprintf("%s[%d]", key, i), reflectValue.Index(i).Interface()) // xxx[0]
-			if i > 256 {
-				return
-			}
 		}
 	} else if valueKind == reflect.Map { // Map
 		for _, sub := range reflectValue.MapKeys() {
