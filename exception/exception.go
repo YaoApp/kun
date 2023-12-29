@@ -66,11 +66,11 @@ func Catch(recovered interface{}, err ...error) error {
 
 	} else if v, ok := recovered.(Exception); ok {
 		printTrace(recovered, err...)
-		return fmt.Errorf("%s", v.Message)
+		return fmt.Errorf("Exception|%d: %s", v.Code, v.Message)
 
 	} else if v, ok := recovered.(*Exception); ok {
 		printTrace(recovered, err...)
-		return fmt.Errorf("%s", v.Message)
+		return fmt.Errorf("Exception|%d: %s", v.Code, v.Message)
 	}
 
 	printTrace(recovered, err...)
