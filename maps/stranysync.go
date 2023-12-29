@@ -212,7 +212,7 @@ func (m MapStrAnySync) Values() []interface{} {
 	return values
 }
 
-//IsEmpty checks whether the map is empty. It returns true if map is empty, or else false.
+// IsEmpty checks whether the map is empty. It returns true if map is empty, or else false.
 func (m MapStrAnySync) IsEmpty() bool {
 	empty := true
 	m.Range(func(key string, value interface{}) bool {
