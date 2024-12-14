@@ -73,9 +73,14 @@ func Catch(recovered interface{}, err ...error) error {
 }
 
 // DebugPrint print the message only in development mode
-func DebugPrint(message string, args ...interface{}) {
+func DebugPrint(err error, message string, args ...interface{}) {
 	if Mode == "development" {
-		fmt.Println(fmt.Sprintf(message, args...))
+		ex := Err(err, 500)
+		color.Red("\n----------------------------------")
+		color.Red("Exception: %s", fmt.Sprintf("%d %s", ex.Code, ex.Message))
+		color.Red("----------------------------------")
+		fmt.Printf(message, args...)
+		fmt.Println()
 		printTrace()
 	}
 }
@@ -83,6 +88,7 @@ func DebugPrint(message string, args ...interface{}) {
 // CatchPrint Catch the exception and print it
 func CatchPrint() {
 	if r := recover(); r != nil {
+		color.Red("Exception:")
 		switch r.(type) {
 		case *Exception:
 			color.Red(r.(*Exception).Message)
@@ -103,6 +109,7 @@ func CatchPrint() {
 // CatchDebug Catch the exception and print debug info
 func CatchDebug() {
 	if r := recover(); r != nil {
+		color.Red("Exception:")
 		switch r.(type) {
 		case *Exception:
 			color.Red(r.(*Exception).Message)
