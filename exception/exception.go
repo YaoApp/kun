@@ -56,25 +56,28 @@ func Catch(recovered interface{}, err ...error) error {
 				return nil
 			}
 
-			printTrace(recovered, err...)
 			return fmt.Errorf("%s", strings.Join(messages, ", "))
 		}
 		return nil
 	} else if v, ok := recovered.(string); ok {
-		printTrace(recovered, err...)
 		return fmt.Errorf("%s", v)
 
 	} else if v, ok := recovered.(Exception); ok {
-		printTrace(recovered, err...)
 		return fmt.Errorf("Exception|%d: %s", v.Code, v.Message)
 
 	} else if v, ok := recovered.(*Exception); ok {
-		printTrace(recovered, err...)
 		return fmt.Errorf("Exception|%d: %s", v.Code, v.Message)
 	}
 
-	printTrace(recovered, err...)
 	return fmt.Errorf("%s", recovered)
+}
+
+// DebugPrint print the message only in development mode
+func DebugPrint(message string, args ...interface{}) {
+	if Mode == "development" {
+		fmt.Println(fmt.Sprintf(message, args...))
+		printTrace()
+	}
 }
 
 // CatchPrint Catch the exception and print it
@@ -147,11 +150,9 @@ func (exception Exception) String() string {
 	return string(txt)
 }
 
-func printTrace(recovered interface{}, err ...error) {
-
+func printTrace() {
 	if Mode == "development" {
-		color.Red("Trace Recovered: %v\n", recovered)
+		color.Yellow("Trace Recovered:\n")
 		fmt.Printf("%s\n", debug.Stack())
-		color.Red("Trace End\n\n")
 	}
 }
