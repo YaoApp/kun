@@ -15,39 +15,41 @@ func DD(values ...interface{}) {
 	os.Exit(0)
 }
 
-// Dump The Dump function dumps the given variables:
-func Dump(values ...interface{}) {
-
+// String the values as string
+func String(values ...interface{}) string {
+	text := ""
 	f := colorjson.NewFormatter()
 	f.Indent = 4
 	for _, v := range values {
-
 		if err, ok := v.(error); ok {
-			color.Red(err.Error())
+			text += color.RedString(err.Error())
 			continue
 		}
 
 		switch v.(type) {
-
 		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, bool:
-			color.Cyan(fmt.Sprintf("%v", v))
+			text += color.CyanString(fmt.Sprintf("%v", v))
 			continue
-
 		case string, []byte:
-			color.Green(fmt.Sprintf("%s", v))
+			text += color.GreenString(fmt.Sprintf("%s", v))
 			continue
-
 		default:
 			var res interface{}
 			txt, err := jsoniter.Marshal(v)
 			if err != nil {
-				color.Red(err.Error())
+				text += color.RedString(err.Error())
 				continue
 			}
-
 			jsoniter.Unmarshal(txt, &res)
 			s, _ := f.Marshal(res)
-			fmt.Printf("%s\n", s)
+			text += color.YellowString(string(s))
 		}
 	}
+	return text
+}
+
+// Dump The Dump function dumps the given variables:
+func Dump(values ...interface{}) {
+	fmt.Println(String(values...))
+
 }

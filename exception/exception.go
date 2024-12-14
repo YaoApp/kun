@@ -56,30 +56,39 @@ func Catch(recovered interface{}, err ...error) error {
 				return nil
 			}
 
-			printTrace(recovered, err...)
 			return fmt.Errorf("%s", strings.Join(messages, ", "))
 		}
 		return nil
 	} else if v, ok := recovered.(string); ok {
-		printTrace(recovered, err...)
 		return fmt.Errorf("%s", v)
 
 	} else if v, ok := recovered.(Exception); ok {
-		printTrace(recovered, err...)
 		return fmt.Errorf("Exception|%d: %s", v.Code, v.Message)
 
 	} else if v, ok := recovered.(*Exception); ok {
-		printTrace(recovered, err...)
 		return fmt.Errorf("Exception|%d: %s", v.Code, v.Message)
 	}
 
-	printTrace(recovered, err...)
 	return fmt.Errorf("%s", recovered)
+}
+
+// DebugPrint print the message only in development mode
+func DebugPrint(err error, message string, args ...interface{}) {
+	if Mode == "development" {
+		ex := Err(err, 500)
+		color.Red("\n----------------------------------")
+		color.Red("Exception: %s", fmt.Sprintf("%d %s", ex.Code, ex.Message))
+		color.Red("----------------------------------")
+		fmt.Printf(message, args...)
+		fmt.Println()
+		printTrace()
+	}
 }
 
 // CatchPrint Catch the exception and print it
 func CatchPrint() {
 	if r := recover(); r != nil {
+		color.Red("Exception:")
 		switch r.(type) {
 		case *Exception:
 			color.Red(r.(*Exception).Message)
@@ -100,6 +109,7 @@ func CatchPrint() {
 // CatchDebug Catch the exception and print debug info
 func CatchDebug() {
 	if r := recover(); r != nil {
+		color.Red("Exception:")
 		switch r.(type) {
 		case *Exception:
 			color.Red(r.(*Exception).Message)
@@ -147,11 +157,9 @@ func (exception Exception) String() string {
 	return string(txt)
 }
 
-func printTrace(recovered interface{}, err ...error) {
-
+func printTrace() {
 	if Mode == "development" {
-		color.Red("Trace Recovered: %v\n", recovered)
+		color.Yellow("Trace Recovered:\n")
 		fmt.Printf("%s\n", debug.Stack())
-		color.Red("Trace End\n\n")
 	}
 }
