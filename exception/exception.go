@@ -16,6 +16,7 @@ import (
 var Mode = "production"
 
 var reEx = regexp.MustCompile(`Exception\|(\d+):(.*)`)
+var reErr = regexp.MustCompile(`Error: (.*)`)
 
 // Exception the Exception type
 type Exception struct {
@@ -33,6 +34,22 @@ func New(message string, code int, args ...interface{}) *Exception {
 		content = strings.TrimSpace(match[2])
 	}
 	return &Exception{Message: content, Code: code}
+}
+
+// Trim the exception message
+func Trim(err error) string {
+	message := err.Error()
+	match := reEx.FindStringSubmatch(message)
+	if len(match) > 0 {
+		return strings.TrimSpace(match[2])
+	}
+
+	// Trim the Error:
+	match = reErr.FindStringSubmatch(message)
+	if len(match) > 0 {
+		return strings.TrimSpace(match[1])
+	}
+	return message
 }
 
 // Err Create an exception instance from the error
