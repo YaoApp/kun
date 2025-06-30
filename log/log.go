@@ -10,6 +10,11 @@ import (
 // F the log fields
 type F map[string]interface{}
 
+// Logger the logrus logger
+type Logger struct {
+	*logrus.Logger
+}
+
 // Entry the log entry
 type Entry struct {
 	*logrus.Entry
@@ -51,11 +56,17 @@ const (
 	TraceLevel
 )
 
+// StandardLogger returns the standard logger
+func StandardLogger() *Logger {
+	return &Logger{logrus.StandardLogger()}
+}
+
 // SetFormatter 0=JSON, 1=TEXT
 func SetFormatter(format Format) {
-	if format == JSON {
+	switch format {
+	case JSON:
 		logrus.SetFormatter(&logrus.JSONFormatter{})
-	} else if format == TEXT {
+	case TEXT:
 		logrus.SetFormatter(&logrus.TextFormatter{})
 	}
 }
