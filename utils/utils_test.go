@@ -1,29 +1,27 @@
 package utils
 
 import (
-	"io/ioutil"
-	"os"
+	"bytes"
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/yaoapp/kun/exception"
 	"github.com/yaoapp/kun/maps"
 )
 
 func TestDump(t *testing.T) {
-	rescueStdout := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
+	var buf bytes.Buffer
+	exception.SetWriter(&buf)
+	defer exception.SetWriter(nil) // reset to os.Stdout via GetWriter fallback
+
 	Dump(maps.Str{
 		"foo": "bar",
 		"nested": maps.Str{
 			"foo": "bar",
 		},
 	})
-	w.Close()
-	out, _ := ioutil.ReadAll(r)
-	os.Stdout = rescueStdout
-	assert.True(t, strings.Contains(string(out), "foo"), "the command return value should be have foo...")
+	assert.True(t, strings.Contains(buf.String(), "foo"), "the command return value should be have foo...")
 }
 
 func TestDumpString(t *testing.T) {
