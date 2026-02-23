@@ -7,6 +7,7 @@ import (
 	"github.com/TylerBrock/colorjson"
 	"github.com/fatih/color"
 	jsoniter "github.com/json-iterator/go"
+	"github.com/yaoapp/kun/exception"
 )
 
 // DD The DD function dumps the given variables and ends execution of the script
@@ -50,6 +51,5 @@ func String(values ...interface{}) string {
 
 // Dump The Dump function dumps the given variables:
 func Dump(values ...interface{}) {
-	fmt.Println(String(values...))
-
+	fmt.Fprintln(exception.GetWriter(), String(values...))
 }

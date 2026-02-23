@@ -3,9 +3,12 @@ package exception
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"os"
 	"regexp"
 	"runtime/debug"
 	"strings"
+	"sync"
 
 	"github.com/TylerBrock/colorjson"
 	"github.com/fatih/color"
@@ -14,6 +17,25 @@ import (
 
 // Mode the mode of the application
 var Mode = "production"
+
+var (
+	devWriter   io.Writer = os.Stdout
+	devWriterMu sync.RWMutex
+)
+
+// SetWriter replaces the output target for debug/exception messages.
+func SetWriter(w io.Writer) {
+	devWriterMu.Lock()
+	devWriter = w
+	devWriterMu.Unlock()
+}
+
+// GetWriter returns the current output target.
+func GetWriter() io.Writer {
+	devWriterMu.RLock()
+	defer devWriterMu.RUnlock()
+	return devWriter
+}
 
 var reEx = regexp.MustCompile(`Exception\|(\d+):(.*)`)
 var reErr = regexp.MustCompile(`Error: (.*)`)
@@ -92,57 +114,62 @@ func Catch(recovered interface{}, err ...error) error {
 // DebugPrint print the message only in development mode
 func DebugPrint(err error, message string, args ...interface{}) {
 	if Mode == "development" {
+		var buf strings.Builder
+		red := color.New(color.FgRed)
+		red.Fprintln(&buf, "\n----------------------------------")
 		ex := Err(err, 500)
-		color.Red("\n----------------------------------")
-		color.Red("Exception: %s", fmt.Sprintf("%d %s", ex.Code, ex.Message))
-		color.Red("----------------------------------")
-		fmt.Printf(message, args...)
-		fmt.Println()
-		printTrace()
+		red.Fprintf(&buf, "Exception: %d %s\n", ex.Code, ex.Message)
+		red.Fprintln(&buf, "----------------------------------")
+		fmt.Fprintf(&buf, message, args...)
+		fmt.Fprintln(&buf)
+		if Mode == "development" {
+			color.New(color.FgYellow).Fprintln(&buf, "Trace Recovered:")
+			fmt.Fprintf(&buf, "%s\n", debug.Stack())
+		}
+		GetWriter().Write([]byte(buf.String()))
 	}
 }
 
 // CatchPrint Catch the exception and print it
 func CatchPrint() {
 	if r := recover(); r != nil {
-		color.Red("Exception:")
+		var buf strings.Builder
+		red := color.New(color.FgRed)
+		red.Fprintln(&buf, "Exception:")
 		switch r.(type) {
 		case *Exception:
-			color.Red(r.(*Exception).Message)
-			r.(*Exception).Print()
-			break
+			red.Fprintln(&buf, r.(*Exception).Message)
+			printExceptionJSON(&buf, *r.(*Exception))
 		case string:
-			color.Red(r.(string))
-			break
+			red.Fprintln(&buf, r.(string))
 		case error:
-			color.Red(r.(error).Error())
-			break
+			red.Fprintln(&buf, r.(error).Error())
 		default:
-			color.Red("%#v\n", r)
+			red.Fprintf(&buf, "%#v\n", r)
 		}
+		GetWriter().Write([]byte(buf.String()))
 	}
 }
 
 // CatchDebug Catch the exception and print debug info
 func CatchDebug() {
 	if r := recover(); r != nil {
-		color.Red("Exception:")
+		var buf strings.Builder
+		red := color.New(color.FgRed)
+		red.Fprintln(&buf, "Exception:")
 		switch r.(type) {
 		case *Exception:
-			color.Red(r.(*Exception).Message)
-			r.(*Exception).Print()
-			break
+			red.Fprintln(&buf, r.(*Exception).Message)
+			printExceptionJSON(&buf, *r.(*Exception))
 		case string:
-			color.Red(r.(string))
-			break
+			red.Fprintln(&buf, r.(string))
 		case error:
-			color.Red(r.(error).Error())
-			break
+			red.Fprintln(&buf, r.(error).Error())
 		default:
-			color.Red("%#v\n", r)
+			red.Fprintf(&buf, "%#v\n", r)
 		}
-
-		fmt.Println("stacktrace from panic: \n" + string(debug.Stack()))
+		fmt.Fprintln(&buf, "stacktrace from panic: \n"+string(debug.Stack()))
+		GetWriter().Write([]byte(buf.String()))
 	}
 }
 
@@ -154,13 +181,19 @@ func (exception *Exception) Ctx(context interface{}) *Exception {
 
 // Print print the exception
 func (exception Exception) Print() {
+	var buf strings.Builder
+	printExceptionJSON(&buf, exception)
+	GetWriter().Write([]byte(buf.String()))
+}
+
+func printExceptionJSON(buf *strings.Builder, exception Exception) {
 	f := colorjson.NewFormatter()
 	f.Indent = 2
 	var res interface{}
 	txt, _ := json.Marshal(exception)
 	json.Unmarshal(txt, &res)
 	s, _ := colorjson.Marshal(res)
-	fmt.Println(string(s))
+	fmt.Fprintln(buf, string(s))
 }
 
 // Throw Throw the exception and terminal progress.
@@ -172,11 +205,4 @@ func (exception Exception) Throw() {
 func (exception Exception) String() string {
 	txt, _ := json.Marshal(exception)
 	return string(txt)
-}
-
-func printTrace() {
-	if Mode == "development" {
-		color.Yellow("Trace Recovered:\n")
-		fmt.Printf("%s\n", debug.Stack())
-	}
 }
