@@ -24,9 +24,14 @@ var (
 )
 
 // SetWriter replaces the output target for debug/exception messages.
+// Pass nil to reset to os.Stdout.
 func SetWriter(w io.Writer) {
 	devWriterMu.Lock()
-	devWriter = w
+	if w == nil {
+		devWriter = os.Stdout
+	} else {
+		devWriter = w
+	}
 	devWriterMu.Unlock()
 }
 
