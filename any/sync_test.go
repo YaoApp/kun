@@ -44,7 +44,7 @@ func TestSyncString(t *testing.T) {
 	assert.Equal(t, "hello", v.String())
 	v.Set(1)
 	assert.Panics(t, func() {
-		fmt.Printf(v.String())
+		fmt.Printf("%s", v.String())
 	})
 }
 
